@@ -1,27 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>James Buckley</title>
-    <link>/</link>
-    <description>Recent content on James Buckley</description>
+    <title>datastudio on James Buckley</title>
+    <link>/tags/datastudio/</link>
+    <description>Recent content in datastudio on James Buckley</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© James Buckley</copyright>
     <lastBuildDate>Sat, 14 Dec 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/datastudio/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>About</title>
-      <link>/about/</link>
-      <pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/about/</guid>
-      <description>My name is James Buckley, and I&amp;rsquo;m a data driven dude. This site is where I&amp;rsquo;ll be sharing anything I&amp;rsquo;ve developed or learned which I found useful, so maybe others will too.
-Here are some ways to get in touch:
- LinkedIn Email Twitter  </description>
-    </item>
     
     <item>
       <title>Lighthouse Gauges for Data Studio</title>
@@ -33,15 +22,6 @@ Here are some ways to get in touch:
 Reverse Engineering How I found the code to create it.
 Community Visualisations How I created a comunity visualisation
 Free to Use Google Storage link and Github Link</description>
-    </item>
-    
-    <item>
-      <title>Resume</title>
-      <link>/resume/</link>
-      <pubDate>Fri, 01 Dec 2017 00:00:00 +0000</pubDate>
-      
-      <guid>/resume/</guid>
-      <description>This is my resume.</description>
     </item>
     
   </channel>

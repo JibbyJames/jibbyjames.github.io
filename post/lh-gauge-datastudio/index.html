@@ -223,7 +223,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <p>In almost all cases, if you want to see how a certain website element was created you can just  right-click and Inspect Element or view the Page Source, easy enough. As the Lighthouse reports are integrated directly in the Chrome Browser, this option isn&rsquo;t available. Fortunately however, the Lighthouse reports can be exported into HTML, so the Page Source option becomes available after all.</p>
 
-<p><img src="/media/images/lh-gauge-html-export.png" alt="alt text" title="Lighthouse report example showing gauges." /></p>
+<p><img src="/media/images/lh-gauge-html-export.png" alt="alt text" title="Lighthouse reports can be exported into HTML." /></p>
 
 <p>The gauges have been sensibly named &ldquo;lh-gauge&rdquo; in the source, so searching through the rest of the source to find how this element is actually created leads to some JavaScript which credits <a href="https://codepen.io/xgad/post/svg-radial-progress-meters" target="_blank">this codepen post</a> by Greg Douglas. This is an excellent post which goes through step by step the CSS and JavaScript methods used to create this effect.</p>
 
@@ -235,17 +235,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <p>The example visualisation created is a bar chart, and there&rsquo;s not much to go on when creating something besides a bar chart, such as a gauge. There are a few more visualisations found in the <a href="https://github.com/googledatastudio/experimental-visualizations" target="_blank">Experiemental Visualisations Github</a>, but still none which would help here, which is surprising given that there already is a Gauge available in Data Studio:</p>
 
-<p><img src="/media/images/lh-gauge-default.png" alt="alt text" title="Lighthouse report example showing gauges." /></p>
+<p><img src="/media/images/lh-gauge-default.png" alt="alt text" title="Gauge currently available in Data Studio." /></p>
 
 <p>Another reverse engineering technique is to look at the Network Log and see what resources are being loaded onto the page, which is exactly what I did to see how the existing Data Studio gauge was built. When the above Gauge is added to a report, several resources from <code>www.gstatic.com/analytics-lego/communityviz/devrel/googlecharts/gauge/...</code> are loaded, which make up the required components of a Data Studio Community Visualisation.</p>
 
 <p>From what was learned in the Data Studio documentation, I knew that all charts require a <code>manifest.json</code> which contains links to all of the resources used in the visualisation. This isn&rsquo;t shown in the Network Log, but was found simply by manually searching for it in the same directory as the other gauge files: <a href="https://www.gstatic.com/analytics-lego/communityviz/devrel/googlecharts/manifest.json" target="_blank">manifest.json</a>.</p>
 
-<p>So now with a complete working example of how to create a Gauge in Data Studio, and the raw CSS/HTML/JS for creating the Lighthouse Gauge, I was able to merge the two sources to create the desired result.</p>
+<p>So now with a complete working example of how to create a Gauge in Data Studio, and the raw CSS/HTML/JS for creating the Lighthouse Gauge, I was able to merge the two sources to create the desired result:</p>
+
+<p><img src="/media/images/lh-gauge-ds.png" alt="alt text" title="Lighthouse gauge inside example Data Studio report." /></p>
 
 <h2 id="free-to-use">Free to Use</h2>
 
-<p>To use in Data Studio, open the Community Visualisation panel, then set the following as the manifest path:</p>
+<p>To use in your own Data Studio reports, open the Community Visualisation panel, then set the following as the manifest path:</p>
 
 <p><code>gs://jjbuckley-datastudio/lighthouse-gauge/</code></p>
 
@@ -253,7 +255,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <p><code>lhGauge</code></p>
 
-<p>The three range values and colours can be configured to match whatever metric being visualised, as well as the font size and family. This can all be done in the Style tab of the visualisation, which I didn&rsquo;t cover in this post, but will save for another day. If you&rsquo;d like to see the complete source for this visualisation, then check out my <a href="https://github.com/JibbyJames/data-studio-lighthouse-gauge" target="_blank">GitHub</a>.</p>
+<p>The three range values and colours can be configured to match whatever metric being visualised, as well as the font size and family. This can all be done in the Style tab of the visualisation, which I didn&rsquo;t cover in this post, but might save for another post. If you&rsquo;d like to see the complete source for this visualisation, then check out my <a href="https://github.com/JibbyJames/data-studio-lighthouse-gauge" target="_blank">GitHub</a>.</p>
 </article>
     <footer class="post-footer">
       

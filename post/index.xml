@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© James Buckley</copyright>
-    <lastBuildDate>Sat, 14 Dec 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 12 Jan 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,13 +15,10 @@
     <item>
       <title>Lighthouse Gauges for Data Studio</title>
       <link>/post/lh-gauge-datastudio/</link>
-      <pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 12 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>/post/lh-gauge-datastudio/</guid>
-      <description>Site speed metrics can be obtained using the Lighthouse auiting tool, which can be run within Google Chrome.
-Reverse Engineering How I found the code to create it.
-Community Visualisations How I created a comunity visualisation
-Free to Use Google Storage link and Github Link</description>
+      <description>Site speed metrics can be obtained using the Lighthouse auiting tool, which can be run within Google Chrome. Metrics like this have started to become used in SEO ranking, so naturally if efforts are being made to improve site speed, it makes sense to measure and report on it. When tasked with creating a dashboard displaying Lighthouse metrics over time, what better way to display the current score for each metric than in the very same gauges Lighthouse itself uses in its reports:</description>
     </item>
     
   </channel>

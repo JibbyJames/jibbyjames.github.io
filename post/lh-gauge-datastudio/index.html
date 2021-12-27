@@ -29,11 +29,11 @@
 
   
   
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@_JibbyJames">
     <meta name="twitter:title" content="Lighthouse Gauges for Data Studio">
     <meta name="twitter:description" content="Site speed metrics can be obtained using the Lighthouse auiting tool, which can be run within Google Chrome. Metrics like this have started to become used in SEO ranking, so naturally if efforts are being made to improve site speed, it makes sense to measure and report on it. When tasked with creating a dashboard displaying Lighthouse metrics over time, what better way to display the current score for each metric than in the very same gauges Lighthouse itself uses in its reports:">
-    <meta name="twitter:image" content="/media/images/lh-gauge-cover.png">
+    <meta name="twitter:image" content="/images/avatar.png">
   
 
   
@@ -41,12 +41,12 @@
   <meta property="og:title" content="Lighthouse Gauges for Data Studio">
   <meta property="og:description" content="Site speed metrics can be obtained using the Lighthouse auiting tool, which can be run within Google Chrome. Metrics like this have started to become used in SEO ranking, so naturally if efforts are being made to improve site speed, it makes sense to measure and report on it. When tasked with creating a dashboard displaying Lighthouse metrics over time, what better way to display the current score for each metric than in the very same gauges Lighthouse itself uses in its reports:">
   <meta property="og:url" content="/post/lh-gauge-datastudio/">
-  <meta property="og:image" content="/media/images/lh-gauge-cover.png">
+  <meta property="og:image" content="/images/avatar.png">
 
 
 
 
-<meta name="generator" content="Hugo 0.56.0">
+<meta name="generator" content="Hugo 0.85.0">
 
 
 <link rel="canonical" href="/post/lh-gauge-datastudio/">
@@ -207,55 +207,34 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </header>
 
   <section class="main post-detail">
+    
     <header class="post-header" style="background: url(/media/images/lh-gauge-cover.png);">
+    
       <h1 class="post-title"><p>Lighthouse Gauges for Data Studio</p></h1>
       <p class="post-meta"><span>Jan 12, 2020 · 4 min read</span></p>
     </header>
-    <article class="post-content">
-
-<p>Site speed metrics can be obtained using the <a href="https://developers.google.com/web/tools/lighthouse">Lighthouse</a> auiting tool, which can be run within Google Chrome. Metrics like this have started to become used in SEO ranking, so naturally if efforts are being made to improve site speed, it makes sense to measure and report on it. When tasked with creating a dashboard displaying Lighthouse metrics over time, what better way to display the current score for each metric than in the very same gauges Lighthouse itself uses in its reports:</p>
-
-<p><img src="/media/images/lh-gauge-report.png" alt="alt text" title="Lighthouse report example showing gauges." /></p>
-
+    <article class="post-content"><p>Site speed metrics can be obtained using the <a href="https://developers.google.com/web/tools/lighthouse">Lighthouse</a> auiting tool, which can be run within Google Chrome. Metrics like this have started to become used in SEO ranking, so naturally if efforts are being made to improve site speed, it makes sense to measure and report on it. When tasked with creating a dashboard displaying Lighthouse metrics over time, what better way to display the current score for each metric than in the very same gauges Lighthouse itself uses in its reports:</p>
+<p><img src="/media/images/lh-gauge-report.png" alt="alt text" title="Lighthouse report example showing gauges."></p>
 <p>It&rsquo;s a fairly minimalist gauge which could easily be used in other reports, not just those on site speed performance metrics. This post explains the steps I took in recreating it within Google Data Studio.</p>
-
 <h2 id="reverse-engineering">Reverse Engineering</h2>
-
 <p>In almost all cases, if you want to see how a certain website element was created you can just  right-click and Inspect Element or view the Page Source, easy enough. As the Lighthouse reports are integrated directly in the Chrome Browser, this option isn&rsquo;t available. Fortunately however, the Lighthouse reports can be exported into HTML, so the Page Source option becomes available after all.</p>
-
-<p><img src="/media/images/lh-gauge-html-export.png" alt="alt text" title="Lighthouse reports can be exported into HTML." /></p>
-
-<p>The gauges have been sensibly named &ldquo;lh-gauge&rdquo; in the source, so searching through the rest of the source to find how this element is actually created leads to some JavaScript which credits <a href="https://codepen.io/xgad/post/svg-radial-progress-meters" target="_blank">this codepen post</a> by Greg Douglas. This is an excellent post which goes through step by step the CSS and JavaScript methods used to create this effect.</p>
-
-<p>The only component missing was the metric value in the center of the gauge, which can be easily updated within the same Javascript functions used. The function converts a value from 0-100 to a 360&#176; value for the gauge, so based on a given min/max value, the metric value in the middle can be any number. Now that I have enough code to create the gauge, the next task was actually using it in a visualisation tool.</p>
-
+<p><img src="/media/images/lh-gauge-html-export.png" alt="alt text" title="Lighthouse reports can be exported into HTML."></p>
+<p>The gauges have been sensibly named &ldquo;lh-gauge&rdquo; in the source, so searching through the rest of the source to find how this element is actually created leads to some JavaScript which credits <!-- raw HTML omitted -->this codepen post<!-- raw HTML omitted --> by Greg Douglas. This is an excellent post which goes through step by step the CSS and JavaScript methods used to create this effect.</p>
+<p>The only component missing was the metric value in the center of the gauge, which can be easily updated within the same Javascript functions used. The function converts a value from 0-100 to a 360° value for the gauge, so based on a given min/max value, the metric value in the middle can be any number. Now that I have enough code to create the gauge, the next task was actually using it in a visualisation tool.</p>
 <h2 id="community-visualisations">Community Visualisations</h2>
-
-<p>Most visualisation tools allow for custom charts and graphs to be inserted in some way, but for this project I chose Google Data Studio and its <a href="https://developers.google.com/datastudio/visualization" target="_blank">Community Visualisations</a> feature. The documentation could be better, which tends to happen for niche Beta features within Google products, but it&rsquo;s enough to undersand the basics.</p>
-
-<p>The example visualisation created is a bar chart, and there&rsquo;s not much to go on when creating something besides a bar chart, such as a gauge. There are a few more visualisations found in the <a href="https://github.com/googledatastudio/experimental-visualizations" target="_blank">Experiemental Visualisations Github</a>, but still none which would help here, which is surprising given that there already is a Gauge available in Data Studio:</p>
-
-<p><img src="/media/images/lh-gauge-default.png" alt="alt text" title="Gauge currently available in Data Studio." /></p>
-
+<p>Most visualisation tools allow for custom charts and graphs to be inserted in some way, but for this project I chose Google Data Studio and its <!-- raw HTML omitted -->Community Visualisations<!-- raw HTML omitted --> feature. The documentation could be better, which tends to happen for niche Beta features within Google products, but it&rsquo;s enough to undersand the basics.</p>
+<p>The example visualisation created is a bar chart, and there&rsquo;s not much to go on when creating something besides a bar chart, such as a gauge. There are a few more visualisations found in the <!-- raw HTML omitted -->Experiemental Visualisations Github<!-- raw HTML omitted -->, but still none which would help here, which is surprising given that there already is a Gauge available in Data Studio:</p>
+<p><img src="/media/images/lh-gauge-default.png" alt="alt text" title="Gauge currently available in Data Studio."></p>
 <p>Another reverse engineering technique is to look at the Network Log and see what resources are being loaded onto the page, which is exactly what I did to see how the existing Data Studio gauge was built. When the above Gauge is added to a report, several resources from <code>www.gstatic.com/analytics-lego/communityviz/devrel/googlecharts/gauge/...</code> are loaded, which make up the required components of a Data Studio Community Visualisation.</p>
-
-<p>From what was learned in the Data Studio documentation, I knew that all charts require a <code>manifest.json</code> which contains links to all of the resources used in the visualisation. This isn&rsquo;t shown in the Network Log, but was found simply by manually searching for it in the same directory as the other gauge files: <a href="https://www.gstatic.com/analytics-lego/communityviz/devrel/googlecharts/manifest.json" target="_blank">manifest.json</a>.</p>
-
+<p>From what was learned in the Data Studio documentation, I knew that all charts require a <code>manifest.json</code> which contains links to all of the resources used in the visualisation. This isn&rsquo;t shown in the Network Log, but was found simply by manually searching for it in the same directory as the other gauge files: <!-- raw HTML omitted -->manifest.json<!-- raw HTML omitted -->.</p>
 <p>So now with a complete working example of how to create a Gauge in Data Studio, and the raw CSS/HTML/JS for creating the Lighthouse Gauge, I was able to merge the two sources to create the desired result:</p>
-
-<p><img src="/media/images/lh-gauge-ds.png" alt="alt text" title="Lighthouse gauge inside example Data Studio report." /></p>
-
+<p><img src="/media/images/lh-gauge-ds.png" alt="alt text" title="Lighthouse gauge inside example Data Studio report."></p>
 <h2 id="free-to-use">Free to Use</h2>
-
 <p>To use in your own Data Studio reports, open the Community Visualisation panel, then set the following as the manifest path:</p>
-
 <p><code>gs://jjbuckley-datastudio/lighthouse-gauge/</code></p>
-
 <p>Then set the following as the Component ID:</p>
-
 <p><code>lhGauge</code></p>
-
-<p>The three range values and colours can be configured to match whatever metric being visualised, as well as the font size and family. This can all be done in the Style tab of the visualisation, which I didn&rsquo;t cover in this post, but might save for another post. If you&rsquo;d like to see the complete source for this visualisation, then check out my <a href="https://github.com/JibbyJames/data-studio-lighthouse-gauge" target="_blank">GitHub</a>.</p>
+<p>The three range values and colours can be configured to match whatever metric being visualised, as well as the font size and family. This can all be done in the Style tab of the visualisation, which I didn&rsquo;t cover in this post, but might save for another post. If you&rsquo;d like to see the complete source for this visualisation, then check out my <!-- raw HTML omitted -->GitHub<!-- raw HTML omitted -->.</p>
 </article>
     <footer class="post-footer">
       
@@ -270,7 +249,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </ul>
       
       <p class="post-copyright">
-        
+        This post was published <strong>715</strong> days ago.
       </p>
     </footer>
     
@@ -299,7 +278,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </section>
   
 <footer class="site-footer">
-  <p>© 2020 James Buckley - All Rights Reserved</p>
+  <p>© 2021 James Buckley - All Rights Reserved</p>
   
 </footer>
 

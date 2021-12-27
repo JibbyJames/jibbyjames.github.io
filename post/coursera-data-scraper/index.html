@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>Data Scraping Coursera to Find the Perfect Course</title>
+
+  
+  
+
+
+  <link href="//cdn.jsdelivr.net" rel="dns-prefetch">
+  <link href="//cdnjs.cloudflare.com" rel="dns-prefetch">
+  
+  <link href="//at.alicdn.com" rel="dns-prefetch">
+  
+  <link href="//fonts.googleapis.com" rel="dns-prefetch">
+  <link href="//fonts.gstatic.com" rel="dns-prefetch">
+  <link href="///disqus.com" rel="dns-prefetch">
+  <link href="//c.disquscdn.com" rel="dns-prefetch">
+
+  
+
+  
+  
+  <meta name="description" content="Coursera is a great site which offers online courses covering a large range of topics such as engineering, data science, machine learning, and mathematics. Some are grouped into specializations, and even full on degrees from universities such as Imperial College London. While you can browse these courses and filter on areas which matter to you, I wondered if analysing the stats on all of them at once could reveal any particular courses that stand out among the crowd.">
+
+  
+  
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@_JibbyJames">
+    <meta name="twitter:title" content="Data Scraping Coursera to Find the Perfect Course">
+    <meta name="twitter:description" content="Coursera is a great site which offers online courses covering a large range of topics such as engineering, data science, machine learning, and mathematics. Some are grouped into specializations, and even full on degrees from universities such as Imperial College London. While you can browse these courses and filter on areas which matter to you, I wondered if analysing the stats on all of them at once could reveal any particular courses that stand out among the crowd.">
+    <meta name="twitter:image" content="/images/avatar.png">
+  
+
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Data Scraping Coursera to Find the Perfect Course">
+  <meta property="og:description" content="Coursera is a great site which offers online courses covering a large range of topics such as engineering, data science, machine learning, and mathematics. Some are grouped into specializations, and even full on degrees from universities such as Imperial College London. While you can browse these courses and filter on areas which matter to you, I wondered if analysing the stats on all of them at once could reveal any particular courses that stand out among the crowd.">
+  <meta property="og:url" content="/post/coursera-data-scraper/">
+  <meta property="og:image" content="/images/avatar.png">
+
+
+
+
+<meta name="generator" content="Hugo 0.85.0">
+
+
+<link rel="canonical" href="/post/coursera-data-scraper/">
+
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="format-detection" content="telephone=no,email=no,adress=no">
+<meta http-equiv="Cache-Control" content="no-transform">
+
+
+<meta name="robots" content="index,follow">
+<meta name="referrer" content="origin-when-cross-origin">
+<meta name="google-site-verification" content="_moDmnnBNVLBN1rzNxyGUGdPHE20YgbmrtzLIbxaWFc">
+<meta name="msvalidate.01" content="22596E34341DD1D17D6022C44647E587">
+
+
+
+
+
+<meta name="theme-color" content="#02b875">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="James Buckley">
+<meta name="msapplication-tooltip" content="James Buckley">
+<meta name='msapplication-navbutton-color' content="#02b875">
+<meta name="msapplication-TileColor" content="#02b875">
+<meta name="msapplication-TileImage" content="/icons/icon-144x144.png">
+<link rel="icon" href="/icons/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.png">
+<link rel="icon" sizes="192x192" href="/icons/icon-192x192.png">
+<link rel="apple-touch-icon" href="/icons/icon-152x152.png">
+<link rel="manifest" href="/manifest.json">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NQNLPRX');</script>
+
+
+
+<link rel="preload" href="/styles/main-rendered.min.css" as="style">
+
+<link rel="preload" href="/styles/custom.min.css" as="style">
+<link rel="preload" href="https://fonts.googleapis.com/css?family=Lobster" as="style">
+<link rel="preload" href="/images/avatar.png" as="image">
+<link rel="preload" href="/images/grey-prism.svg" as="image">
+
+
+<style>
+  body {
+    background: rgb(244, 243, 241) url('/images/grey-prism.svg') repeat fixed;
+  }
+</style>
+<link rel="stylesheet" href="/styles/main-rendered.min.css">
+
+<link rel="stylesheet" href="/styles/custom.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.2/dist/medium-zoom.min.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/video.js@7.3.0/dist/video-js.min.css">
+
+
+
+  
+  
+<!--[if lte IE 8]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-ie8@1.1.2/dist/videojs-ie8.min.js"></script>
+<![endif]-->
+
+<!--[if lte IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20180112/classList.min.js"></script>
+<![endif]-->
+
+
+</head>
+  <body>
+    <div class="suspension">
+      <a role="button" aria-label="Go to top" title="Go to top" class="to-top is-hide"><span class="icon icon-up" aria-hidden="true"></span></a>
+      
+        
+	<a role="button" aria-label="Go to comments" title="Go to comments" class="to-comment" href="#disqus_thread"><span class="icon icon-comment" aria-hidden="true"></span></a>
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <a href="/"><img class="avatar" src="/images/avatar.png" alt="Avatar"></a>
+  
+  <h2 class="title"><a href="/">James Buckley</a></h2>
+  
+  <p class="subtitle">Think it ~ Build it ~ Use it ~ Share it</p>
+  <button class="menu-toggle" type="button" aria-label="Main Menu" aria-expanded="false" tab-index="0">
+    <span class="icon icon-menu" aria-hidden="true"></span>
+  </button>
+
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/about/">About</a>
+        </li>
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/resume/">Resume</a>
+        </li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list"><li class="social-item">
+          <a href="mailto:jjbuckley.91@gmail.com" title="Email" aria-label="Email">
+            <span class="icon icon-email" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//github.com/JibbyJames" rel="me" title="GitHub" aria-label="GitHub">
+	    <span class="icon icon-github" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//twitter.com/_JibbyJames" rel="me" title="Twitter" aria-label="Twitter">
+            <span class="icon icon-twitter" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//www.linkedin.com/in/jamesjbuckley" rel="me" title="LinkedIn" aria-label="LinkedIn">
+            <span class="icon icon-linkedin" aria-hidden="true"></span>
+          </a>
+        </li></ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    
+    <header class="post-header" style="background: #88c5ef ; background: -webkit-linear-gradient(to left, #88c5ef, #2a73cc); background: linear-gradient(to left, #88c5ef, #2a73cc);">
+    
+      <h1 class="post-title"><p>Data Scraping Coursera to Find the Perfect Course</p></h1>
+      <p class="post-meta"><span>Dec 27, 2021 · 12 min read</span></p>
+    </header>
+    <article class="post-content"><p>Coursera is a great site which offers online courses covering a large range of topics such as engineering, data science, machine learning, and mathematics. Some are grouped into specializations, and even full on degrees from universities such as Imperial College London. While you can browse these courses and filter on areas which matter to you, I wondered if analysing the stats on all of them at once could reveal any particular courses that stand out among the crowd.</p>
+<p>In this post I describe how I went about collecting this data for analysis, both of which I used Python for. While I am focusing on Coursera data, it can be used as a high level guide for approaching data scraping the web as a whole. All of the code included in this post can be found on my <a href="https://github.com/JibbyJames/">github</a>.</p>
+<h2 id="investigating-where-the-data-comes-from">Investigating Where the Data Comes From</h2>
+<p>The first step for any data scraping task involve looking at the page which has data we want to scrape. In this case, the best place to start would be a page which loads a lot of courses so we can see how the site itself gathers that data. A page such as <a href="https://www.coursera.org/browse">https://www.coursera.org/browse</a> is the natural place to begin.</p>
+<p>From here we look at how this data is being populated on the page, because we&rsquo;ll want to reproduce this method in our data scraping if possible. The order in which we look is the order in which data scraping is most convinient, which is the following:</p>
+<p><strong>API Requests</strong> - Open up the developer tools and look at the network requests being made, and filter by &ldquo;XHR&rdquo; requests. Is there anything which returns the data we want to scrape? Look for network requests which return a json or XML, which is normally the output choice for this type of API call.</p>
+<p><strong>DOM Variables</strong> - Type &ldquo;window&rdquo; in the console to view all of the JavaScript variables created on the page, some of which might be used for storing data, such as a dataLayer used for Analytics tracking. Executing some JavaScript to read all of the data within this object is simple.</p>
+<p><strong>Page HTML</strong> - This approach won&rsquo;t let you down, but its ease of access comes down to how the data you&rsquo;re after is laid out on the page, and if it has a readable class/id naming convention for its HTML elements. Using JQuery or a HTML parser to return all values with certain element id/class values would be required if so.</p>
+<p>The course browse page we started on makes a request to an &ldquo;algolia.net&rdquo; which returns a JSON with some relevant data about the courses on the page, so it&rsquo;s the API approach for us, what luck. This request goes to a &ldquo;queries&rdquo; page and has query parameters that must influence the results returned, including the API which will let us actually return anything.</p>
+<p><img src="/media/images/coursera-algolia-developer-tools.png" alt="alt text" title="Image showing the Algolia request being made on Coursera within Chrome Developer Tools"></p>
+<p>While I don&rsquo;t know what exactly Aloglia is, what I do know is that they have <a href="https://www.algolia.com/doc/api-reference/api-parameters/">great documentation for their RESTful API</a> which will come in useful later. Browsing around other pages of Coursera and looking at what other Algolia requests are being made, I find a great URL which returns all courses available:</p>
+<ul>
+<li><a href="https://lua9b20g37-dsn.algolia.net/1/indexes/test_products">https://lua9b20g37-dsn.algolia.net/1/indexes/test_products</a></li>
+</ul>
+<p>Don&rsquo;t let the index name fool you, these aren&rsquo;t test products, these are actual live courses on Coursera. Referring back to the Algolia documentation I found, we can return more courses with the <a href="https://www.algolia.com/doc/api-reference/api-parameters/hitsPerPage/">hitsPerPage</a>, and look at other pages with the <a href="https://www.algolia.com/doc/api-reference/api-parameters/page/">page</a> query parameter. The problem with this data though is that it&rsquo;s incomplete, we want to also know information about Specializations (which consists of several individual courses we have now) and how much these cost too.</p>
+<p>The Algolia requests weren&rsquo;t the only API requests being made, there were in fact calls being made to a &ldquo;coursera.org/api/&rdquo; as well (bit of a giveaway that, and I will admit I investigated this first). These two requests with appropriate query parameters will return Specialization and Price data.</p>
+<ul>
+<li><a href="https://www.coursera.org/api/onDemandSpecializations.v1">https://www.coursera.org/api/onDemandSpecializations.v1</a></li>
+<li><a href="https://www.coursera.org/api/productPrices.v3">https://www.coursera.org/api/productPrices.v3</a></li>
+</ul>
+<p>So we know where all this data is, so we can now start to write some code to automate it.</p>
+<h2 id="automating-the-data-scraping">Automating the Data Scraping</h2>
+<p>Let me start this section by saying an important rule for data scraping: <strong><em>When you start making lots of requests to a public facing site to collect your data, do so ethically and respectfully</em></strong>. Remember that hosting this data costs money, and having some nerd come along and collect all this data without paying or at least seeing an ad isn&rsquo;t what they had in mind when they chose to make all of this data publicly available. The way I would approach this rule, is by doing the following:</p>
+<ol>
+<li>
+<p><strong>Put a small time delay between each request so as to not make them too frequent which could overload their servers.</strong> This applies to API requests as well as html page requests, but you may find that with public APIs there is a usage limit already in place, so you&rsquo;ll be forced to slow down anyway.</p>
+</li>
+<li>
+<p><strong>Store the data locally once you have collected it</strong>. This may seem obvious, but the part of your program that analyses the newly scraped data can do so using a local copy while you&rsquo;re writing that part. You don&rsquo;t need to interact with the site each time during development.</p>
+</li>
+<li>
+<p><strong>Edit your User-Agent in the request to prevent looking like a bot</strong>. If you don&rsquo;t want to be blocked by some automatic firewall or DDOS protection service, pretend you&rsquo;re an iPhone user or something. Wait a minute, this one doesn&rsquo;t sound ethical at all&hellip; moving on.</p>
+</li>
+</ol>
+<p>We&rsquo;re quite fortunate in that the Algolia request returns a large number of courses at a time, as well as most of the fields we want. There&rsquo;s a limit to how many courses are returned on one &ldquo;page&rdquo; though, so we&rsquo;ll need to just loop through all of these pages. I was lazy and just looked manually to see the total number of pages when returning 1000 courses, but the proper way would be to check if the number of courses returned on a given page is less than 1000, indicating it is the last page:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8f5902;font-style:italic"># Loop through each of the pages returned for the all products request</span>
+<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">i</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">range</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">product_pages</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">):</span>
+    
+    <span style="color:#8f5902;font-style:italic"># Request data from algolia for current page</span>
+    <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#000">urllib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">urlopen</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;</span><span style="color:#4e9a06">{</span><span style="color:#000">algolia_url</span><span style="color:#4e9a06">}{</span><span style="color:#000">i</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#39;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">url</span><span style="color:#000;font-weight:bold">:</span>
+        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Fetching coursera program data on page </span><span style="color:#4e9a06">{</span><span style="color:#000">i</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">.&#34;</span><span style="color:#000;font-weight:bold">)</span>
+        <span style="color:#000">page_data</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">loads</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">url</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">decode</span><span style="color:#000;font-weight:bold">())</span>
+        
+        <span style="color:#8f5902;font-style:italic"># Save page data to local json file.</span>
+        <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#204a87">open</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;all-products-</span><span style="color:#4e9a06">{</span><span style="color:#000">i</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">.json&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;w&#39;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">outfile</span><span style="color:#000;font-weight:bold">:</span>
+            <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">dump</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">page_data</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">outfile</span><span style="color:#000;font-weight:bold">)</span>
+            
+        <span style="color:#8f5902;font-style:italic"># Merge all products data into single list.</span>
+        <span style="color:#000">all_products_list</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">all_products_list</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">page_data</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;hits&#39;</span><span style="color:#000;font-weight:bold">]</span>
+        
+    <span style="color:#8f5902;font-style:italic"># Wait before scraping next data</span>
+    <span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">sleep</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">wait_length</span><span style="color:#000;font-weight:bold">)</span>  
+        
+<span style="color:#8f5902;font-style:italic"># Convert raw products json data into dataframe</span>
+<span style="color:#000">all_products_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">pd</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">DataFrame</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">from_dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">all_products_list</span><span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><p>The raw data returned from this request requires a bit of cleaning to move onto the next stage. We want a field with the course ID and a separate list of all of the specializations the courses belong to. There are already fields that distinguish specializations from courses, and the <code>objectID</code> field for both is prefixed with either &ldquo;course~&rdquo; or &ldquo;s12n~&rdquo; which we&rsquo;ll want to remove for later.</p>
+<p>This is also where we create our first pandas dataframe which will be the main datatype used later for analysis. When scraping and looping through the data I&rsquo;m used to using key-value like data types which is what we&rsquo;ll continue using for now.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8f5902;font-style:italic"># Group Courses, and clean data before creating dict</span>
+<span style="color:#000">courses_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">all_products_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">loc</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">all_products_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;entityType&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#39;COURSE&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">reset_index</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">drop</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">courses_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;id&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">courses_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">lambda</span> <span style="color:#000">row</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">row</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;objectID&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;course~&#39;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#39;&#39;</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">axis</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">courses_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">courses_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">set_index</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;id&#39;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">courses</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">courses_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">to_dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;index&#39;</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#8f5902;font-style:italic"># Group Specializations, and clean data before creating dict</span>
+<span style="color:#000">specializations_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">all_products_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">loc</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">all_products_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;entityType&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#39;SPECIALIZATION&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">reset_index</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">drop</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">specializations_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;id&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">specializations_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">lambda</span> <span style="color:#000">row</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">row</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;objectID&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;s12n~&#39;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#39;&#39;</span><span style="color:#000;font-weight:bold">),</span> <span style="color:#000">axis</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">specializations_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">specializations_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">set_index</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;id&#39;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">specializations</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">specializations_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">to_dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;index&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><p>We now have a list of all courses and specializations, but we don&rsquo;t know what courses belong to what specialization yet. To get this, we need to use the Coursera API we found and look at each specialization at a time, as this will list all of the courses included. When we loop through each specialization we will edit both courses and specialization dicts we made in the previous step to add the associated specialization and course id respectively.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8f5902;font-style:italic"># Loop through all specializations to collect their courses.</span>
+<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">index</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">spec_id</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">enumerate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">specializations</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">keys</span><span style="color:#000;font-weight:bold">())[:</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">specializations</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">keys</span><span style="color:#000;font-weight:bold">())]):</span>
+        
+    <span style="color:#8f5902;font-style:italic"># Get specialization URL.</span>
+    <span style="color:#000">specs</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">spec_id</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;courses&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>        
+    <span style="color:#000">spec_row</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">specs</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">spec_id</span><span style="color:#000;font-weight:bold">]</span>        
+    <span style="color:#000">slug</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">spec_row</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;objectUrl&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">replace</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;/specializations/&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#34;&#34;</span><span style="color:#000;font-weight:bold">)</span>    
+    <span style="color:#000">spec_url</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;https://www.coursera.org/api/onDemandSpecializations.v1?q=slug&amp;slug=</span><span style="color:#4e9a06">{</span><span style="color:#000">slug</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&amp;fields=courseIds,id&#34;</span>
+
+    <span style="color:#8f5902;font-style:italic"># Make a request to that URL.</span>
+    <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#000">urllib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">urlopen</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">spec_url</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">url</span><span style="color:#000;font-weight:bold">:</span>
+
+        <span style="color:#8f5902;font-style:italic"># Parse the JSON response.</span>
+        <span style="color:#000">spec_data</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">loads</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">url</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">decode</span><span style="color:#000;font-weight:bold">())</span>        
+        <span style="color:#000">course_ids</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">spec_data</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;elements&#39;</span><span style="color:#000;font-weight:bold">][</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;courseIds&#39;</span><span style="color:#000;font-weight:bold">]</span>
+        
+        <span style="color:#8f5902;font-style:italic"># Loop through each course.</span>
+        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">course_id</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">course_ids</span><span style="color:#000;font-weight:bold">:</span>
+            
+            <span style="color:#8f5902;font-style:italic"># Check that we have a record of this course already from Algolia  .</span>
+            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">course_id</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">courses</span><span style="color:#000;font-weight:bold">:</span>
+                
+                <span style="color:#8f5902;font-style:italic"># Initialize specs array for course if required.</span>
+                <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#4e9a06">&#39;specializations&#39;</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">courses</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">course_id</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">keys</span><span style="color:#000;font-weight:bold">():</span>
+                    <span style="color:#000">courses</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">course_id</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;specializations&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>
+                
+                <span style="color:#8f5902;font-style:italic"># Add Specialization to Course, and vice versa.</span>
+                <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">spec_id</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">courses</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">course_id</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;specializations&#39;</span><span style="color:#000;font-weight:bold">]:</span>
+                    <span style="color:#000">courses</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">course_id</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;specializations&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">spec_id</span><span style="color:#000;font-weight:bold">)</span>                
+                <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">course_id</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">specs</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">spec_id</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;courses&#39;</span><span style="color:#000;font-weight:bold">]:</span>
+                    <span style="color:#000">specs</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">spec_id</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;courses&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">course_id</span><span style="color:#000;font-weight:bold">)</span>
+            
+    <span style="color:#8f5902;font-style:italic"># Wait before scraping next data.</span>
+    <span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">sleep</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">wait_length</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#8f5902;font-style:italic"># Convert back to DF and save to local JSON.</span>
+<span style="color:#000">specs_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">pd</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">DataFrame</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">from_dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">specs</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">orient</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;index&#39;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">specs_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">to_json</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;specializations.json&#39;</span><span style="color:#000;font-weight:bold">)</span>   
+</code></pre></div><p>To improve readability I removed some print statements I used to log the progress of this query while it is running. The query can take a little while to request all 400+ specializations especially when we are limiting how many requests we make to ease the load on their servers (and to avoid being blocked).</p>
+<p>The last piece of the data scraping puzzle is to obtain the pricing data for the courses, as not all courses are priced equally. A Masters in Data Science from Imperial might be the best course available, but I&rsquo;d maybe want to start somewhere £15,000 cheaper.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8f5902;font-style:italic"># Pricing Data for courses</span>
+<span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">index</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">course_id</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">enumerate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">courses</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">keys</span><span style="color:#000;font-weight:bold">())[:</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">courses</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">keys</span><span style="color:#000;font-weight:bold">())]):</span>
+           
+    <span style="color:#8f5902;font-style:italic"># If there is no price data, it is free. I think.</span>
+    <span style="color:#000">courses</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">course_id</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;price&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">0</span>    
+    <span style="color:#000">price_url</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;https://www.coursera.org/api/productPrices.v3/VerifiedCertificate~</span><span style="color:#4e9a06">{</span><span style="color:#000">course_id</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">~GBP~GB&#34;</span>
+    
+    <span style="color:#8f5902;font-style:italic"># Request price data from URL. Update price data in course dict.</span>
+    <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+        <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#000">urllib</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">request</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">urlopen</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">price_url</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">url</span><span style="color:#000;font-weight:bold">:</span>            
+            <span style="color:#000">price_data</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">loads</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">url</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">decode</span><span style="color:#000;font-weight:bold">())</span>
+            <span style="color:#000">courses</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">course_id</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;price&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">price_data</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;elements&#39;</span><span style="color:#000;font-weight:bold">][</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;amount&#39;</span><span style="color:#000;font-weight:bold">]</span>
+    <span style="color:#204a87;font-weight:bold">except</span><span style="color:#000;font-weight:bold">:</span>
+        <span style="color:#8f5902;font-style:italic"># Log error</span>
+
+    <span style="color:#8f5902;font-style:italic"># Wait before scraping next data</span>
+    <span style="color:#000">time</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">sleep</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">wait_length</span><span style="color:#000;font-weight:bold">)</span>   
+
+<span style="color:#8f5902;font-style:italic"># Convert back to DF and save to JSON for running locally.</span>
+<span style="color:#000">courses_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">pd</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">DataFrame</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">from_dict</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">courses</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">orient</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;index&#39;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">courses_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">to_json</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;courses.json&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><p>The local JSON files we&rsquo;ve created can now be used if we want to skip to the analysis part going forward. When we want the most up to date courses and specializations we can query the APIs again, but they shouldn&rsquo;t change too much very often.</p>
+<h2 id="a-little-bit-of-data-prep">A Little Bit Of Data Prep</h2>
+<p>We have all of our courses and all of our specializations, but at the moment this data is separate, and could do with some cleaning as well. We&rsquo;ll want to create some dataframes that properly links this data to fill in all of the gaps before we start the analysis.</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#8f5902;font-style:italic"># Add some fields for later use</span>
+<span style="color:#000">specs_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;partners_str&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">specs_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">lambda</span> <span style="color:#000">x</span> <span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#39;Offered by &#39;</span> <span style="color:#ce5c00;font-weight:bold">+</span>  <span style="color:#4e9a06">&#39; &amp; &#39;</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">join</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">x</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;partners&#39;</span><span style="color:#000;font-weight:bold">]),</span><span style="color:#000">axis</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">specs_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;specialization&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">specs_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;name&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#4e9a06">&#39;</span><span style="color:#4e9a06">\n</span><span style="color:#4e9a06">&#39;</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">specs_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;partners_str&#39;</span><span style="color:#000;font-weight:bold">]</span>
+
+<span style="color:#8f5902;font-style:italic"># Expand the lists we want to aggregate in the specializations table</span>
+<span style="color:#000">specs_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;courses&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">specs_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;courses&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">apply</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">lambda</span> <span style="color:#000">d</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">d</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">isinstance</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">d</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">[])</span>
+<span style="color:#000">specs_with_expanded_courses_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">expand_list</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">specs_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;courses&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;course_id&#39;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">specs_with_expanded_partners_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">expand_list</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">specs_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;partners&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;partner_name&#39;</span><span style="color:#000;font-weight:bold">)</span>
+
+<span style="color:#8f5902;font-style:italic"># Join to the courses dataframe for additional metrics and clean columns names.</span>
+<span style="color:#000">merged_specs_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">pd</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">merge</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">specs_with_expanded_courses_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">courses_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">left_on</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;course_id&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">right_index</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">aggd_specs_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">merged_specs_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">groupby</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;specialization&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">as_index</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">sum</span><span style="color:#000;font-weight:bold">()[[</span><span style="color:#4e9a06">&#39;specialization&#39;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#39;avgLearningHours_y&#39;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#39;price&#39;</span><span style="color:#000;font-weight:bold">]]</span>
+<span style="color:#000">aggd_specs_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">rename</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">columns</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#39;avgLearningHours_y&#39;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#39;avgLearningHours&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;avgLearningHours_y&#39;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#4e9a06">&#39;avgLearningHours&#39;</span><span style="color:#000;font-weight:bold">},</span> <span style="color:#000">inplace</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">True</span><span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><p>We&rsquo;ve created some new fields that look prettier and only included the fields which are of interest to us, so we can now proceed with the analysis.</p>
+<h2 id="lets-answer-some-questions">Let&rsquo;s Answer Some Questions</h2>
+<p>To grow our understanding of the data, let&rsquo;s set out to answer some questions which gradually dive deeper into the data as we learn more about it:</p>
+<h3 id="_what-are-some-basic-stats-for-enrolments-average-learning-hours-average-rating-and-price-for-all-specializations_"><em>What are some basic stats for enrolments, average learning hours, average rating, and price for all specializations?</em></h3>
+<p>To quickly see some basic figures on these fields we can use the <code>describe</code> function on the data which outputs the count/mean/min/max/median type variables. This only generates a dataframe with these values though, so it&rsquo;s better to look to <code>seaborn</code> to visualise it with a box plot:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#000">fig</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">axes</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">plt</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">subplots</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">4</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">sns</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">boxplot</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;enrolments&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">specs_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ax</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">axes</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">])</span>
+<span style="color:#000">sns</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">boxplot</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;avgLearningHours&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">aggd_specs_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ax</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">axes</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">])</span>
+<span style="color:#000">sns</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">boxplot</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;price&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">aggd_specs_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ax</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">axes</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">])</span>
+<span style="color:#000">sns</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">boxplot</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;avgProductRating&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">specs_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ax</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">axes</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">])</span>
+</code></pre></div><p><img src="/media/images/all-specs-box-plots.png" alt="alt text" title="Box plots showing general stats for specializations."></p>
+<p>There&rsquo;s a huge jump from the maximum enrolments compared to the average, and even the 75% quartile. This tells us that there&rsquo;s a huge amount of specializations on Coursera with not that many enrolments, and a handful of very popular course. Everything else looks as expected, and it&rsquo;s good to see what I can expect for average learning hours and cost. Something missing from the box plots which is included in the <code>describe</code> output is the count of specializations, which there are 436 of, so a lot to choose from!</p>
+<h3 id="_what-are-the-most-popular-specializations_"><em>What are the most popular specializations?</em></h3>
+<p>Those outliers in the enrolments box plot caught my attention, so we can use a bar chart to investigate what they are:</p>
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#000">top_specs_enrolments</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">aggd_specs_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">nlargest</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">15</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#39;enrolments&#39;</span><span style="color:#000;font-weight:bold">)</span>
+<span style="color:#000">sns</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">barplot</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;enrolments&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">y</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;specialization&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">data</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">top_specs_enrolments</span><span style="color:#000;font-weight:bold">)</span>
+</code></pre></div><p><img src="/media/images/top-specs-enrolments.png" alt="alt text" title="The top 15 most popular specializations."></p>
+<p>Coursera started with machine learning courses initially, so it&rsquo;s no surprise to see the most popular courses are in this category. I&rsquo;m a little annoyed that none of the scraped data actually includes a &ldquo;category&rdquo; field as that would be quite interesting to delve into.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>I&rsquo;m writing this conclusion almost two years after I started writing this post, so I suppose I should give a short update explaining why that is and what has happened in that time. Long story short, a lot of significant and unpredictable life events happened which completely derailed me, and that&rsquo;s not even including the global pandemic. Ultimately these obstacles I was faced with helped me grow as a person, and learn to appreciate everything that I was taking for granted before such as my friends, family, relationships, and time itself. So rather than continue putting off the things I want to do or work-towards, I&rsquo;m actively doing those things now so that I won&rsquo;t feel regret for never achieving them, or at least trying to. And yes, that includes finishing a little blog post about web scraping.</p>
+<p>If this entire post wasn&rsquo;t a big enough clue, I&rsquo;m interested in data science/engineering. Back when I was doing the analysis on the courses available I was quite pleased to see that the top courses offered on this site are based on these very subjects. If I had spent more time looking into ways on how to rank a good course, I may have singled out a few to choose from, but ended up going with a course which used tools I had been using a little at work and wanted to learn more about.</p>
+<p>The course I ended up choosing was the <a href="https://www.coursera.org/professional-certificates/gcp-data-engineering">Preparing for Google Cloud Certification: Cloud Data Engineer Professional Certificate</a> specialization, which is created by Google. As it is a specialization made up of six courses, there were some inconsistencies with the quality of the lessons, and a lot of duplication and some lessons were just copy pasting code which isn&rsquo;t ideal. I would still recommend it however if you&rsquo;re interested in Data Engineering, but I feel like there&rsquo;s still much to learn. More content for another blog post in 2023 perhaps.</p>
+</article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="/tags/data-scraping"><span class="tag">Data Scraping</span></a></li>
+        
+          <li><a href="/tags/python"><span class="tag">Python</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        
+      </p>
+    </footer>
+    
+      <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "jibbyjames" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      
+    
+  </section>
+  
+<footer class="site-footer">
+  <p>© 2021 James Buckley - All Rights Reserved</p>
+  
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@15.0.0/dist/smooth-scroll.min.js"></script>
+
+
+
+<script async src="https://cdn.jsdelivr.net/npm/video.js@7.3.0/dist/video.min.js"></script>
+
+
+
+
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    },
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
+</script>
+
+
+
+<script src="/scripts/index.min.js"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('\/service-worker.js').then(function() {
+      console.log('[ServiceWorker] Registered');
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>python on James Buckley</title>
+    <link>/tags/python/</link>
+    <description>Recent content in python on James Buckley</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© James Buckley</copyright>
+    <lastBuildDate>Mon, 27 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Data Scraping Coursera to Find the Perfect Course</title>
+      <link>/post/coursera-data-scraper/</link>
+      <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/coursera-data-scraper/</guid>
+      <description>Coursera is a great site which offers online courses covering a large range of topics such as engineering, data science, machine learning, and mathematics. Some are grouped into specializations, and even full on degrees from universities such as Imperial College London. While you can browse these courses and filter on areas which matter to you, I wondered if analysing the stats on all of them at once could reveal any particular courses that stand out among the crowd.</description>
+    </item>
+    
+  </channel>
+</rss>

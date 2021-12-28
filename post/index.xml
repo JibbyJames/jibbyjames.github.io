@@ -14,7 +14,7 @@
       <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
       
       <guid>/post/coursera-data-scraper/</guid>
-      <description>Coursera is a great site which offers online courses covering a large range of topics such as engineering, data science, machine learning, and mathematics. Some are grouped into specializations, and even full on degrees from universities such as Imperial College London. While you can browse these courses and filter on areas which matter to you, I wondered if analysing the stats on all of them at once could reveal any particular courses that stand out among the crowd.</description>
+      <description>Coursera is a great site which offers online courses covering a large range of topics such as engineering, data science, machine learning, and mathematics. Some are grouped into specializations, and even full-on degrees from universities such as Imperial College London. While you can browse these courses and filter on areas which matter to you, I wondered if analysing the stats on all of them at once could reveal any particular courses that stand out among the crowd.</description>
     </item>
     
     <item>
@@ -23,7 +23,7 @@
       <pubDate>Sun, 12 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>/post/lh-gauge-datastudio/</guid>
-      <description>Site speed metrics can be obtained using the Lighthouse auiting tool, which can be run within Google Chrome. Metrics like this have started to become used in SEO ranking, so naturally if efforts are being made to improve site speed, it makes sense to measure and report on it. When tasked with creating a dashboard displaying Lighthouse metrics over time, what better way to display the current score for each metric than in the very same gauges Lighthouse itself uses in its reports:</description>
+      <description>Site speed metrics can be obtained using the Lighthouse auditing tool, which can be run within Google Chrome. Metrics like this have started to become used in SEO ranking, so naturally if efforts are being made to improve site speed, it makes sense to measure and report on it. When tasked with creating a dashboard displaying Lighthouse metrics over time, what better way to display the current score for each metric than in the very same gauges Lighthouse itself uses in its reports:</description>
     </item>
     
   </channel>

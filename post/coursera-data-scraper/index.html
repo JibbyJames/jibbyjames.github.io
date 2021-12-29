@@ -73,12 +73,12 @@
 <meta name="msapplication-tooltip" content="James Buckley">
 <meta name='msapplication-navbutton-color' content="#02b875">
 <meta name="msapplication-TileColor" content="#02b875">
-<meta name="msapplication-TileImage" content="/icons/icon-144x144.png">
+<meta name="msapplication-TileImage" content="/icons/icon-144x144.webp">
 <link rel="icon" href="/icons/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.png">
-<link rel="icon" sizes="192x192" href="/icons/icon-192x192.png">
-<link rel="apple-touch-icon" href="/icons/icon-152x152.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.webp">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.webp">
+<link rel="icon" sizes="192x192" href="/icons/icon-192x192.webp">
+<link rel="apple-touch-icon" href="/icons/icon-152x152.webp">
 <link rel="manifest" href="/manifest.json">
 
 
@@ -197,6 +197,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </li><li class="social-item">
           <a href="//twitter.com/_JibbyJames" rel="me" title="Twitter" aria-label="Twitter">
             <span class="icon icon-twitter" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//www.instagram.com/jibbyjames" rel="me" title="Instagram" aria-label="Instagram">
+            <span class="icon icon-instagram" aria-hidden="true"></span>
           </a>
         </li><li class="social-item">
           <a href="//www.linkedin.com/in/jamesjbuckley" rel="me" title="LinkedIn" aria-label="LinkedIn">
@@ -397,26 +401,35 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </p>
     </footer>
     
-      <div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
+      <div id="disqus_thread">
+    <div id="disqus_center">
+        <button id="disqus_show_comments_btn">Show Comments</button>
+    </div>
+</div>
+<script type="text/javascript">
+
+    var button = document.getElementById('disqus_show_comments_btn');
+    button.onclick = function() {
+        
+        
+        
+        
+
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'jibbyjames';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+        function disqus_config() {
+            this.callbacks.onReady.push(function () {
+                console.log("Disqus loaded")
+            });
         }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "jibbyjames" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
+    };
+
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       
     
   </section>

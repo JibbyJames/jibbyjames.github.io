@@ -253,7 +253,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </ul>
       
       <p class="post-copyright">
-        This post was published <strong>717</strong> days ago.
+        This post was published <strong>718</strong> days ago.
       </p>
     </footer>
     
@@ -264,24 +264,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 <script type="text/javascript">
 
-    var button = document.getElementById('disqus_show_comments_btn');
-    button.onclick = function() {
-        
-        
-        
-        
-
+    
+    var loadDisqus = function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         var disqus_shortname = 'jibbyjames';
         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }
 
-        function disqus_config() {
-            this.callbacks.onReady.push(function () {
-                console.log("Disqus loaded")
-            });
-        }
-    };
+    
+    if(document.location.hash == "#disqus_thread") {
+        loadDisqus();
+    }
+
+    
+    var button = document.getElementById('disqus_show_comments_btn');
+    button.onclick = function(){ loadDisqus(); };
 
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
@@ -327,6 +325,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
   });
 </script>
+
+
+
+
+<script id="dsq-count-scr" src="//jibbyjames.disqus.com/count.js" async></script>
 
 
 

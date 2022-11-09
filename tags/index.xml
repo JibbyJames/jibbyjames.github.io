@@ -7,22 +7,67 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© James Buckley</copyright>
-    <lastBuildDate>Mon, 27 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 29 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>data scraping</title>
-      <link>/tags/data-scraping/</link>
-      <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
+      <title>apis</title>
+      <link>/tags/apis/</link>
+      <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
       
-      <guid>/tags/data-scraping/</guid>
+      <guid>/tags/apis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>enrichment</title>
+      <link>/tags/enrichment/</link>
+      <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/enrichment/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>films</title>
+      <link>/tags/films/</link>
+      <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/films/</guid>
       <description></description>
     </item>
     
     <item>
       <title>python</title>
       <link>/tags/python/</link>
-      <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
       
       <guid>/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sorting algorithms</title>
+      <link>/tags/sorting-algorithms/</link>
+      <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/sorting-algorithms/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>visualisations</title>
+      <link>/tags/visualisations/</link>
+      <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/visualisations/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>data scraping</title>
+      <link>/tags/data-scraping/</link>
+      <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/data-scraping/</guid>
       <description></description>
     </item>
     
@@ -41,15 +86,6 @@
       <pubDate>Sun, 12 Jan 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/javascript/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>visualisations</title>
-      <link>/tags/visualisations/</link>
-      <pubDate>Sun, 12 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/visualisations/</guid>
       <description></description>
     </item>
     

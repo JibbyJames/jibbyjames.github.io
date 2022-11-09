@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>Enriching my Film Journal with the IMDB API</title>
+
+  
+  
+
+
+  <link href="//cdn.jsdelivr.net" rel="dns-prefetch">
+  <link href="//cdnjs.cloudflare.com" rel="dns-prefetch">
+  
+  <link href="//at.alicdn.com" rel="dns-prefetch">
+  
+  <link href="//fonts.googleapis.com" rel="dns-prefetch">
+  <link href="//fonts.gstatic.com" rel="dns-prefetch">
+  <link href="///disqus.com" rel="dns-prefetch">
+  <link href="//c.disquscdn.com" rel="dns-prefetch">
+
+  
+
+  
+  
+  
+    <meta name="description" content="A while ago I made the decision to log every film I watched so that I could one day analyse this data in some way. With a year&amp;rsquo;s worth of films I thought it could be interesting to also enrich this with more information about the films using all of the data available from IMDB. Was it worth it? Let&amp;rsquo;s find out&amp;hellip;
+Choosing What to Analyse It&amp;rsquo;s always good to start with some initial questions you want to answer before any data analysis task.">
+  
+
+  
+  
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@_JibbyJames">
+    <meta name="twitter:title" content="Enriching my Film Journal with the IMDB API">
+    <meta name="twitter:description" content="A while ago I made the decision to log every film I watched so that I could one day analyse this data in some way. With a year&amp;rsquo;s worth of films I thought it could be interesting to also enrich this with more information about the films using all of the data available from IMDB. Was it worth it? Let&amp;rsquo;s find out&amp;hellip;
+Choosing What to Analyse It&amp;rsquo;s always good to start with some initial questions you want to answer before any data analysis task.">
+    <meta name="twitter:image" content="/images/avatar.webp">
+  
+
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Enriching my Film Journal with the IMDB API">
+  <meta property="og:description" content="A while ago I made the decision to log every film I watched so that I could one day analyse this data in some way. With a year&amp;rsquo;s worth of films I thought it could be interesting to also enrich this with more information about the films using all of the data available from IMDB. Was it worth it? Let&amp;rsquo;s find out&amp;hellip;
+Choosing What to Analyse It&amp;rsquo;s always good to start with some initial questions you want to answer before any data analysis task.">
+  <meta property="og:url" content="/post/film-journal-enrichment/">
+  <meta property="og:image" content="/images/avatar.webp">
+
+
+
+
+<meta name="generator" content="Hugo 0.101.0">
+
+
+<link rel="canonical" href="/post/film-journal-enrichment/">
+
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="format-detection" content="telephone=no,email=no,adress=no">
+<meta http-equiv="Cache-Control" content="no-transform">
+
+
+<meta name="robots" content="index,follow">
+<meta name="referrer" content="origin-when-cross-origin">
+<meta name="google-site-verification" content="_moDmnnBNVLBN1rzNxyGUGdPHE20YgbmrtzLIbxaWFc">
+<meta name="msvalidate.01" content="22596E34341DD1D17D6022C44647E587">
+
+
+
+
+
+<meta name="theme-color" content="#02b875">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="James Buckley">
+<meta name="msapplication-tooltip" content="James Buckley">
+<meta name='msapplication-navbutton-color' content="#02b875">
+<meta name="msapplication-TileColor" content="#02b875">
+<meta name="msapplication-TileImage" content="/icons/icon-144x144.webp">
+<link rel="icon" href="/icons/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.webp">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.webp">
+<link rel="icon" sizes="192x192" href="/icons/icon-192x192.webp">
+<link rel="apple-touch-icon" href="/icons/icon-152x152.webp">
+<link rel="manifest" href="/manifest.json">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NQNLPRX');</script>
+
+
+
+<link rel="preload" href="/styles/main-rendered.min.css" as="style">
+
+<link rel="preload" href="/styles/custom.min.css" as="style">
+<link rel="preload" href="https://fonts.googleapis.com/css?family=Lobster" as="style">
+<link rel="preload" href="/images/avatar.webp" as="image">
+<link rel="preload" href="/images/grey-prism.svg" as="image">
+
+
+<style>
+  body {
+    background: rgb(244, 243, 241) url('/images/grey-prism.svg') repeat fixed;
+  }
+</style>
+<link rel="stylesheet" href="/styles/main-rendered.min.css">
+
+<link rel="stylesheet" href="/styles/custom.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.2/dist/medium-zoom.min.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/video.js@7.3.0/dist/video-js.min.css">
+
+
+
+  
+  
+<!--[if lte IE 8]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-ie8@1.1.2/dist/videojs-ie8.min.js"></script>
+<![endif]-->
+
+<!--[if lte IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20180112/classList.min.js"></script>
+<![endif]-->
+
+
+</head>
+  <body>
+    <div class="suspension">
+      <a role="button" aria-label="Go to top" title="Go to top" class="to-top is-hide"><span class="icon icon-up" aria-hidden="true"></span></a>
+      
+        
+	<a role="button" aria-label="Go to comments" title="Go to comments" class="to-comment" href="#disqus_thread"><span class="icon icon-comment" aria-hidden="true"></span></a>
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <a href="/"><img class="avatar" src="/images/avatar.webp" alt="Avatar"></a>
+  
+  <h2 class="title"><a href="/">James Buckley</a></h2>
+  
+  <p class="subtitle">Think it ~ Build it ~ Use it ~ Share it</p>
+  <button class="menu-toggle" type="button" aria-label="Main Menu" aria-expanded="false" tab-index="0">
+    <span class="icon icon-menu" aria-hidden="true"></span>
+  </button>
+
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/about/">About</a>
+        </li>
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/resume/">Resume</a>
+        </li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list"><li class="social-item">
+          <a href="mailto:jjbuckley.42@gmail.com" title="Email" aria-label="Email">
+            <span class="icon icon-email" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//github.com/JibbyJames" rel="me" title="GitHub" aria-label="GitHub">
+	    <span class="icon icon-github" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//twitter.com/_JibbyJames" rel="me" title="Twitter" aria-label="Twitter">
+            <span class="icon icon-twitter" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//www.instagram.com/jibbyjames" rel="me" title="Instagram" aria-label="Instagram">
+            <span class="icon icon-instagram" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//www.linkedin.com/in/jamesjbuckley" rel="me" title="LinkedIn" aria-label="LinkedIn">
+            <span class="icon icon-linkedin" aria-hidden="true"></span>
+          </a>
+        </li></ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    
+    <header class="post-header" style="background: url(/media/images/popcorn-cover.webp);">
+    
+      <h1 class="post-title"><p>Enriching my Film Journal with the IMDB API</p></h1>
+      <p class="post-meta"><span>Aug 29, 2022 · 12 min read</span></p>
+    </header>
+    <article class="post-content"><p>A while ago I made the decision to log every film I watched so that I could one day analyse this data in some way. With a year&rsquo;s worth of films I thought it could be interesting to also enrich this with more information about the films using all of the data available from IMDB. Was it worth it? Let&rsquo;s find out&hellip;</p>
+<h2 id="choosing-what-to-analyse">Choosing What to Analyse</h2>
+<p>It&rsquo;s always good to start with some initial questions you want to answer before any data analysis task. Once you start working with the data and begin to answer these questions you&rsquo;ll naturally ask more questions, leading to more answers, more insights, hoping to eventually reach a point of satisfaction. My list of questions range from the basic to the complex:</p>
+<ol>
+<li>How much time have I spent watching films?</li>
+<li>Which day of the week do I prefer to watch films?</li>
+<li>What genre of film do I prefer to watch?</li>
+<li>Which streaming provider do I watch most of my films?</li>
+<li>What is the average IMDB rating of the films I watch?</li>
+</ol>
+<p>I also wanted to rank all of the films I watch in a year, so that I could then answer:</p>
+<ol start="6">
+<li>What were my top ten favourite films of the year?</li>
+<li>Do my opinions on films align to IMDB ratings?</li>
+</ol>
+<p>With each film I also logged the date and platform I watched it on, which alone could answer a some of those questions, but I knew the IMDB API was going to be a big part of this data analysis which I get into more detail below.</p>
+<h2 id="how-to-rank-every-film">How to Rank Every Film</h2>
+<p>The first new data point I wanted to add was a score of how much I personally enjoyed the film, which was going to be a challenge as I chose not to rate the films as part of the journal. I could go and retrospectively add a score to each film now, but giving a fair score on a film I might have forgotten about didn&rsquo;t seem fair. What I thought was fairer was choosing between a much much shorter list of films and ranking those, like some kind of tournament perhaps, which is the underlying concept of a sorting algorithm!</p>
+<p>I&rsquo;m no stranger to sorting algorithms having studied Computer Science at university, but I did have to familiarise myself with many of them again in order to know which one was more suitable for sorting unlabelled records. Choosing the right algorithm isn&rsquo;t simply a matter of which is more efficient in terms of their Big O time complexity, but how easily it can be carried out by a human (me specifically).</p>
+<h3 id="bubble-sort">Bubble Sort</h3>
+<p>This is the first sorting algorithm we were taught at uni, and were promptly told how slow and inefficient it is, so I&rsquo;ll admit it was an odd choice to start with for this task. Nevertheless I wanted to see just how long it took to sort even a short list (I forgot to mention but I have 209 films to rank in total).</p>
+<p>Once I started coding I soon realised I needed a fast way to input my selections, so decided with using the left and right arrows to decide which film was better. It&rsquo;s this step which is going to be the slowest part of this process, the &ldquo;comparisons&rdquo; step, which will also help me with deciding the sorting algorithms to use. Here&rsquo;s how I implemented the bubble sort algorithm:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">pynput</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">keyboard</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">starting_list</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;Indiana Jones The Last Crusade&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;Prisoners&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;Semi Pro&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;Indiana Jones Temple of Doom&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;L.A. Confidential&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;Kick-Ass&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;Bad Boys&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;Princess Mononoke&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;Once Upon a Time in Hollywood&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;You Don</span><span style="color:#4e9a06">\&#39;</span><span style="color:#4e9a06">t Mess With The Zohan&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;Uncut Gems&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;Syndoche New York&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">latest_key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">None</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">question_number</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">get_arrow_input</span><span style="color:#000;font-weight:bold">():</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">on_release</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">key</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">key</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">key</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">left</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">key</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">right</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">global</span> <span style="color:#000">latest_key</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">latest_key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">{</span><span style="color:#000">key</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8f5902;font-style:italic"># Stop listener</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Collect events until released</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#000">keyboard</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Listener</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">on_release</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">on_release</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">listener</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">listener</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">join</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">bubble_sort</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">array</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">question_number</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># loop through each element of array</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">i</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">range</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">array</span><span style="color:#000;font-weight:bold">)):</span>
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># keep track of swapping</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">swapped</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">False</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># loop to compare array elements</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">j</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">range</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">array</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Q</span><span style="color:#4e9a06">{</span><span style="color:#000">question_number</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: [</span><span style="color:#4e9a06">{</span><span style="color:#000">array</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">j</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">] or [</span><span style="color:#4e9a06">{</span><span style="color:#000">array</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">j</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]?&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">get_arrow_input</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">choice</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;left&#34;</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">latest_key</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;Key.left&#34;</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#4e9a06">&#34;right&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8f5902;font-style:italic"># compare two adjacent elements</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8f5902;font-style:italic"># change &gt; to &lt; to sort in descending order</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">choice</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;right&#34;</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#8f5902;font-style:italic"># swapping occurs if elements</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#8f5902;font-style:italic"># are not in the intended order</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">temp</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">array</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">j</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">array</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">j</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">array</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">j</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">array</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">j</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">temp</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">swapped</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">question_number</span> <span style="color:#ce5c00;font-weight:bold">+=</span> <span style="color:#0000cf;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>                    
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># no swapping means the array is already sorted</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># so no need for further comparison</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">swapped</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">break</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">array</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">sorted_list</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">bubble_sort</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">starting_list</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sorted_list</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>It should come as no surprise that this took quite a long time, and it was only ten films. Choosing between two films with arrow keys worked very well though, so at least that part was staying.</p>
+<h3 id="quick-sort">Quick Sort</h3>
+<p>The next natural choice would be the quick sort, which as it&rsquo;s name should tell you is rather quick. In my code below I&rsquo;ve reused the same keyboard input logic as above:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">partition</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">low</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">high</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">low</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">pivot</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">high</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">global</span> <span style="color:#000">question_number</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">j</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">range</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">low</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">high</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># If current element is smaller than or</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># equal to pivot</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Q</span><span style="color:#4e9a06">{</span><span style="color:#000">question_number</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: [</span><span style="color:#4e9a06">{</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">j</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">] or [</span><span style="color:#4e9a06">{</span><span style="color:#000">pivot</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]?&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">question_number</span> <span style="color:#ce5c00;font-weight:bold">+=</span> <span style="color:#0000cf;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">get_arrow_input</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">latest_key</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;Key.left&#34;</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>            <span style="color:#8f5902;font-style:italic"># increment index of smaller element</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">i</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">i</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">j</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">j</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">i</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">high</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">high</span><span style="color:#000;font-weight:bold">],</span> <span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">i</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># The main function that implements quick sort</span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># arr[] --&gt; Array to be sorted</span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># low  --&gt; Starting index</span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># high  --&gt; Ending index</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">quick_sort</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">low</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">high</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">arr</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">low</span> <span style="color:#ce5c00;font-weight:bold">&lt;</span> <span style="color:#000">high</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># pi is partitioning index, arr[p] is now</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># at right place</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">pi</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">partition</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">low</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">high</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># Separately sort elements before</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># partition and after partition</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">quick_sort</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">low</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">pi</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">quick_sort</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">pi</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">high</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">quick_sort</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">starting_list</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">starting_list</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">starting_list</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>While this was quicker than the bubble sort and allowed me to test a larger list of films, I soon realised there was a problem with carrying out this sorting algorithm myself. With this algorithm you compare a lot of different films with one &ldquo;pivot&rdquo; film, which after a while became very dull to do one film at a time. There was also an issue where an error happened and I lost all of the sorting progress I made. Simply picking up where I left off isn&rsquo;t something this algorithm can do well to my limited knowledge.</p>
+<p>What I needed to have was a more engaging way to compare different films to keep things interesting, and more importantly find a way to save my progress in case of errors or needed breaks due to boredom!</p>
+<h3 id="binary-insertion-sort">Binary Insertion Sort</h3>
+<p>While this isn&rsquo;t the most common sorting algorithm, it is capable of doing exactly what I wanted to sort my films. It builds up a sorted list of films over time allowing me to save this and build to it by going through the list of unsorted films in chunks. This was also more engaging as by default you&rsquo;ll start with comparing it to the film currently ranked in the middle, and after a few choices you&rsquo;re comparing it with films of similar quality.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">binary_search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">val</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">start</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># we need to distinguish whether we should insert</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># before or after the left boundary.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># imagine [0] is the last step of the binary search</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># and we need to decide where to insert -1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">global</span> <span style="color:#000">question_number</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">start</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">end</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Q</span><span style="color:#4e9a06">{</span><span style="color:#000">question_number</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: [</span><span style="color:#4e9a06">{</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">start</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">] or [</span><span style="color:#4e9a06">{</span><span style="color:#000">val</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]?&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">question_number</span> <span style="color:#ce5c00;font-weight:bold">+=</span> <span style="color:#0000cf;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">get_arrow_input</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">latest_key</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;Key.right&#34;</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">start</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">else</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">start</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># this occurs if we are moving beyond left\&#39;s boundary</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># meaning the left boundary is the least position to</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># find a number greater than val</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">start</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#000">end</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">start</span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#000">mid</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">int</span><span style="color:#000;font-weight:bold">((</span><span style="color:#000">start</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#000">end</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Q</span><span style="color:#4e9a06">{</span><span style="color:#000">question_number</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: [</span><span style="color:#4e9a06">{</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">mid</span><span style="color:#000;font-weight:bold">]</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">] or [</span><span style="color:#4e9a06">{</span><span style="color:#000">val</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]?&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">question_number</span> <span style="color:#ce5c00;font-weight:bold">+=</span> <span style="color:#0000cf;font-weight:bold">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">get_arrow_input</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">latest_key</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;Key.left&#34;</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">binary_search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">val</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mid</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">end</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">elif</span> <span style="color:#000">latest_key</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;Key.right&#34;</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">binary_search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">arr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">val</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">start</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">mid</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">else</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">mid</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic">#sorted_list = []</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">index</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">value</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">enumerate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">starting_list</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;Film [</span><span style="color:#4e9a06">{</span><span style="color:#000">index</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">/</span><span style="color:#4e9a06">{</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">starting_list</span><span style="color:#000;font-weight:bold">)</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">index</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">binary_search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sorted_list</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">value</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sorted_list</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">sorted_list</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">sorted_list</span><span style="color:#000;font-weight:bold">[:</span><span style="color:#000">index</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000;font-weight:bold">[</span><span style="color:#000">value</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">sorted_list</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">index</span><span style="color:#000;font-weight:bold">:]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">except</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;Encountered an error!! Whoopsie&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sorted_list</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">sorted_list</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>The commented out <code>sorted_list</code> array would contain an already sorted list of films which was extremely useful! This was the algorithm I used to sort all 209 films which did take a while but was interesting enough that I didn&rsquo;t mind. All of the films in my journal were now fairly ranked, so onto the IMDB API task&hellip;</p>
+<h2 id="pulling-film-stats-from-imdb">Pulling Film Stats from IMDB</h2>
+<p>Using the IMDB API was actually quite straightforward thanks to the IMDbPY package, which appears to have been renamed <a href="https://pypi.org/project/cinemagoer/">cinemagoer</a>, so big thanks to the developers for that. I learned how to use this package relatively quickly due to <a href="https://www.geeksforgeeks.org/python-imdbpy-searching-a-movie/">this helpful article</a> which included some examples relevant to the information I needed. Here is all of the code I had to write to extract all of the IMDB information I wanted initially:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">imdb</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">json</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">datetime</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">datetime</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># creating instance of IMDb</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">ia</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">imdb</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">IMDb</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># Information to fetch</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">info_to_fetch</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;runtimes&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;year&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;genres&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;rating&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># Some info we want to keep as a list, otherwise take first value.</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">info_as_lists</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;genres&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># Get film list</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">with</span> <span style="color:#204a87">open</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;2021_sorted.json&#39;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">json_file</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">film_list</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">load</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">json_file</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># Shorten list while testing</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">film_list</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#39;The Pianist&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">film_list_len</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">film_list</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># Maintain list of films</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">film_records</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">index</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">film_name</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">enumerate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">film_list</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;[</span><span style="color:#4e9a06">{</span><span style="color:#000">index</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">/</span><span style="color:#4e9a06">{</span><span style="color:#000">film_list_len</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]: Fetching IMDB data for [</span><span style="color:#4e9a06">{</span><span style="color:#000">film_name</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]...&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">film_record</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">&#39;title&#39;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">film_name</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># Search for the movie</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">search_results</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ia</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">search_movie</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">film_name</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">search_results</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&gt;</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">top_result</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">search_results</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">film_id</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">top_result</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">movieID</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">film</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ia</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get_movie</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">film_id</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8f5902;font-style:italic"># Check that info is available</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">available_info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">film</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">infoset2keys</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;main&#39;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#8f5902;font-style:italic"># Fetch available info</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">info</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">info_to_fetch</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">info</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">available_info</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000">fetched_info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">film</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">info</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87">isinstance</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">fetched_info</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">list</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">and</span> <span style="color:#000">info</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">info_as_lists</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#000">fetched_info</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">fetched_info</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;    Found [</span><span style="color:#4e9a06">{</span><span style="color:#000">info</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]: </span><span style="color:#4e9a06">{</span><span style="color:#000">fetched_info</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000">film_record</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">info</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">fetched_info</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">else</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;    Film not found!&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#c00;font-weight:bold">Exception</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">error</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">error</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;    Ran into error trying to fetch data, skipping film...&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">film_records</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">film_record</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">output_filename</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;imdb_data_</span><span style="color:#4e9a06">{</span><span style="color:#000">datetime</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">now</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strftime</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;%Y%m</span><span style="color:#4e9a06">%d</span><span style="color:#4e9a06">_%H%M%S&#34;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">.json&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;Saving film data to [</span><span style="color:#4e9a06">{</span><span style="color:#000">output_filename</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">with</span> <span style="color:#204a87">open</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">output_filename</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;w&#39;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">output_file</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">json</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">dump</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">film_records</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">output_file</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">indent</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">4</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>There is a lot of information available once the <code>get_movie</code> function returns the film, so all I needed to do was pick out the information I was interested in which I kept in a <code>info_to_fetch</code> list. Some film titles I had in my list weren&rsquo;t found however, but this was mostly due to typos or slight differences in the title name like a missing subtitle for example. For these missing records I manually went through and corrected them and before long had all of the information I was after.</p>
+<p>This was my first time using the IMDB API so I didn&rsquo;t want to pull in too much data and not know what to do with it. The ease of pulling in data was impressive though, so I&rsquo;ll definitely use it again and pull in more information.</p>
+<h2 id="answering-the-initial-questions">Answering the Initial Questions</h2>
+<p>I now have my entire film journal ranked and enriched with IMDB data, which means it&rsquo;s finally time to start answering some questions. I used the popular package <a href="https://pandas.pydata.org/">pandas</a> to put all of the information I had gathered in various CSVs in a single dataframe <code>films_df</code>, which let me answer those questions in the following way&hellip;</p>
+<h3 id="total-films-watched">Total films watched?</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87">len</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">))</span>
+</span></span></code></pre></div><pre tabindex="0"><code>209
+</code></pre><h3 id="total-time-watched">Total time watched</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#000">total_runtime_mins</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;runtimes&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">sum</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">total_runtime_formatted</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">timedelta</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">minutes</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">total_runtime_mins</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">total_runtime_formatted</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>17 days, 7:02:00
+</code></pre><h3 id="preferred-day-to-watch-films">Preferred day to watch films</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#000">total_days_of_week</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Date&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">dt</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">day_name</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">value_counts</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">total_days_of_week</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>Friday       40
+Saturday     40
+Sunday       39
+Wednesday    27
+Thursday     24
+Tuesday      21
+Monday       18
+</code></pre><h3 id="most-films-watched-in-a-single-day">Most films watched in a single day</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#000">film_date_frequency</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Date&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">value_counts</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">max_count</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">film_date_frequency</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">max</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">film_date_frequency</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">film_date_frequency</span><span style="color:#ce5c00;font-weight:bold">==</span><span style="color:#000">max_count</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">sort_index</span><span style="color:#000;font-weight:bold">())</span>
+</span></span></code></pre></div><pre tabindex="0"><code>2021-01-01    3
+2021-02-13    3
+2021-04-06    3
+</code></pre><h3 id="films-watched-most-frequently">Films watched most frequently</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#000">film_title_frequency</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Title&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">value_counts</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">max_count</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">film_title_frequency</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">max</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">film_title_frequency</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">film_title_frequency</span><span style="color:#ce5c00;font-weight:bold">==</span><span style="color:#000">max_count</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">sort_index</span><span style="color:#000;font-weight:bold">())</span>
+</span></span></code></pre></div><pre tabindex="0"><code>Druk                     2
+Life of Brian (1979)     2
+Mean Girls               2
+Under the Silver Lake    2
+</code></pre><h3 id="longest-film-watched">Longest film watched</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#000">longest_film</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;runtimes&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;runtimes&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">max</span><span style="color:#000;font-weight:bold">()][[</span><span style="color:#4e9a06">&#39;Title&#39;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#39;runtimes&#39;</span><span style="color:#000;font-weight:bold">]]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">longest_film_title</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">longest_film</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Title&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">longest_film_runtime</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">timedelta</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">minutes</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">longest_film</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;runtimes&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">])</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;Longest film was &#34;</span><span style="color:#4e9a06">{</span><span style="color:#000">longest_film_title</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34; with runtime of </span><span style="color:#4e9a06">{</span><span style="color:#000">longest_film_runtime</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>Longest film was &#34;Once Upon a Time in America&#34; with runtime of 3:49:00
+</code></pre><h3 id="shortest-film-watched">Shortest film watched</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#000">shortest_film</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;runtimes&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;runtimes&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">min</span><span style="color:#000;font-weight:bold">()][[</span><span style="color:#4e9a06">&#39;Title&#39;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#39;runtimes&#39;</span><span style="color:#000;font-weight:bold">]]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">shortest_film_title</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">shortest_film</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Title&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">shortest_film_runtime</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">timedelta</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">minutes</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">shortest_film</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;runtimes&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">])</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;Shortest film was &#34;</span><span style="color:#4e9a06">{</span><span style="color:#000">shortest_film_title</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34; with runtime of </span><span style="color:#4e9a06">{</span><span style="color:#000">shortest_film_runtime</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>Shortest film was &#34;Death to 2020&#34; with runtime of 1:10:00
+</code></pre><h3 id="best-rated-film-watched">Best rated film watched</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#000">best_imdb_film</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;rating&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;rating&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">max</span><span style="color:#000;font-weight:bold">()][[</span><span style="color:#4e9a06">&#39;Title&#39;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#39;rating&#39;</span><span style="color:#000;font-weight:bold">]]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">best_imdb_film_title</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">best_imdb_film</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Title&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">best_imdb_film_rating</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">best_imdb_film</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;rating&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;The highest rated film was &#34;</span><span style="color:#4e9a06">{</span><span style="color:#000">best_imdb_film_title</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34; with rating of </span><span style="color:#4e9a06">{</span><span style="color:#000">best_imdb_film_rating</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>The highest rated film was &#34;Schindlers List&#34; with rating of 8.9
+</code></pre><h3 id="worst-rated-film-watched">Worst rated film watched</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#000">worst_imdb_film</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;rating&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;rating&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">min</span><span style="color:#000;font-weight:bold">()][[</span><span style="color:#4e9a06">&#39;Title&#39;</span><span style="color:#000;font-weight:bold">,</span><span style="color:#4e9a06">&#39;rating&#39;</span><span style="color:#000;font-weight:bold">]]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">worst_imdb_film_title</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">worst_imdb_film</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Title&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">worst_imdb_film_rating</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">worst_imdb_film</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;rating&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">values</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;The worst rated film was &#34;</span><span style="color:#4e9a06">{</span><span style="color:#000">worst_imdb_film_title</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34; with rating of </span><span style="color:#4e9a06">{</span><span style="color:#000">worst_imdb_film_rating</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><pre tabindex="0"><code>The worst rated film was &#34;Sentinelle&#34; with rating of 4.7
+</code></pre><h3 id="total-films-watched-grouped-by-medium">Total films watched grouped by medium</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Where&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">value_counts</span><span style="color:#000;font-weight:bold">())</span>
+</span></span></code></pre></div><pre tabindex="0"><code>Netflix            122
+Prime               28
+Disney+             27
+Blu-ray             11
+Torrent             11
+Cinema               3
+Prime Purchase       2
+DVD                  2
+All 4                1
+TV                   1
+BBC iPlayer          1
+</code></pre><h3 id="average-film-imdb-rating-by-medium">Average film IMDB rating by medium</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">films_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">groupby</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;Where&#39;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">mean</span><span style="color:#000;font-weight:bold">()[</span><span style="color:#4e9a06">&#39;rating&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">sort_values</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ascending</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">))</span>
+</span></span></code></pre></div><pre tabindex="0"><code>All 4              8.600000
+BBC iPlayer        8.100000
+Blu-ray            7.590909
+Prime              7.571429
+Cinema             7.566667
+Torrent            7.445455
+Netflix            7.274590
+DVD                7.200000
+Disney+            7.166667
+Prime Purchase     7.100000
+TV                 7.000000
+</code></pre><h3 id="my-ranking-normalised-plotted-against-imdb-ranking-normalised">My ranking normalised plotted against IMDB ranking normalised</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">plotly.express</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">px</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">rankings</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;2021 Rank&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">copy</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">normalized_rankings</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">rankings</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">rankings</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">min</span><span style="color:#000;font-weight:bold">())</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">rankings</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">max</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">rankings</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">min</span><span style="color:#000;font-weight:bold">())</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">ratings</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;rating&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">copy</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">normalized_ratings</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">ratings</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">ratings</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">min</span><span style="color:#000;font-weight:bold">())</span><span style="color:#ce5c00;font-weight:bold">/</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ratings</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">max</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">ratings</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">min</span><span style="color:#000;font-weight:bold">())</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">films_df_with_normalised</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">films_df</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">copy</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">films_df_with_normalised</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;normalized_rankings&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">normalized_rankings</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">films_df_with_normalised</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;normalized_ratings&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">normalized_ratings</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">fig</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">px</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">scatter</span><span style="color:#000;font-weight:bold">(</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">films_df_with_normalised</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">x</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;normalized_ratings&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">y</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;normalized_rankings&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">color</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;Where&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">hover_data</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Title&#39;</span><span style="color:#000;font-weight:bold">],</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">trendline</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;ols&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">trendline_scope</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#39;overall&#39;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">width</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">800</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">height</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">400</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">fig</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">update_yaxes</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">autorange</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;reversed&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">fig</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">show</span><span style="color:#000;font-weight:bold">()</span>
+</span></span></code></pre></div><p><img src="/media/images/film-rankings-normalised.webp" alt="alt text" title="Normalised ratings against normalised rankings."></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Quite a few interesting insights! The above scatter plot is a bit of a mess, but that was sort of the point for this one to demonstrate that my film tastes don&rsquo;t strictly follow the tastes of IMDB reviewers. The trend line suggests there is some correlation, but really it&rsquo;s a all over the place, which is good!</p>
+<p>When it comes to choosing a favourite streaming provider there also isn&rsquo;t a clear winner. Prime appeared to have provided me with slightly higher quality films, but I used Netflix much more so I must prefer that in general, which I&rsquo;d say is accurate.</p>
+<p>While I enjoyed this project which let me revisit some areas of programming that I learned at university, realising I spent over 17 days watching films does make me wonder what else I could have done in that time. It&rsquo;s easy to think that time could have spent doing something more productive, but if we leave no time to relax and enjoy ourselves we&rsquo;d all go crazy. I&rsquo;m sure I&rsquo;ll continue to watch many films for years to come, as that&rsquo;s what I love doing, and there&rsquo;s nothing wrong with doing what you love.</p>
+</article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="/tags/films"><span class="tag">Films</span></a></li>
+        
+          <li><a href="/tags/visualisations"><span class="tag">Visualisations</span></a></li>
+        
+          <li><a href="/tags/python"><span class="tag">Python</span></a></li>
+        
+          <li><a href="/tags/apis"><span class="tag">Apis</span></a></li>
+        
+          <li><a href="/tags/enrichment"><span class="tag">Enrichment</span></a></li>
+        
+          <li><a href="/tags/sorting-algorithms"><span class="tag">Sorting Algorithms</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        
+      </p>
+    </footer>
+    
+      <div id="disqus_thread">
+    <div id="disqus_center">
+        <button id="disqus_show_comments_btn">Show Comments</button>
+    </div>
+</div>
+<script type="text/javascript">
+
+    
+    var loadDisqus = function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'jibbyjames';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }
+
+    
+    if(document.location.hash == "#disqus_thread") {
+        loadDisqus();
+    }
+
+    
+    var button = document.getElementById('disqus_show_comments_btn');
+    button.onclick = function(){ loadDisqus(); };
+
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      
+    
+  </section>
+  
+<footer class="site-footer">
+  <p>© 2022 James Buckley - All Rights Reserved</p>
+  
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@15.0.0/dist/smooth-scroll.min.js"></script>
+
+
+
+<script async src="https://cdn.jsdelivr.net/npm/video.js@7.3.0/dist/video.min.js"></script>
+
+
+
+
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    },
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
+</script>
+
+
+
+
+<script id="dsq-count-scr" src="//jibbyjames.disqus.com/count.js" async></script>
+
+
+
+<script src="/scripts/index.min.js"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('\/service-worker.js').then(function() {
+      console.log('[ServiceWorker] Registered');
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+  </body>
+</html>

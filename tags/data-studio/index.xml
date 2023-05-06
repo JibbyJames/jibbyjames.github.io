@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>visualisations on James Buckley</title>
-    <link>/tags/visualisations/</link>
-    <description>Recent content in visualisations on James Buckley</description>
+    <title>data studio on James Buckley</title>
+    <link>/tags/data-studio/</link>
+    <description>Recent content in data studio on James Buckley</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© James Buckley</copyright>
-    <lastBuildDate>Sat, 06 May 2023 00:00:00 +0000</lastBuildDate><atom:link href="/tags/visualisations/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 06 May 2023 00:00:00 +0000</lastBuildDate><atom:link href="/tags/data-studio/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Analysing WhatsApp Data with BigQuery and Looker Studio</title>
       <link>/post/whatsapp-metrics/</link>
@@ -16,16 +16,6 @@
       <guid>/post/whatsapp-metrics/</guid>
       <description>WhatsApp is one of the most popular messaging apps in the world, with over 2 billion active users. It’s no surprise that many people want to analyse their WhatsApp data to gain insights into their conversations, including myself! In this post, I’ll detail how I used Python and BigQuery to analyze my WhatsApp data, covering everything from parsing the raw TXT export to visualizing the data. Let’s get started!
 Parsing the TXT Export Within WhatsApp it is possible to export chat data to a TXT file, by opening the options within individual or group chats, tapping &amp;ldquo;More&amp;rdquo; then &amp;ldquo;Export chat&amp;rdquo;.</description>
-    </item>
-    
-    <item>
-      <title>Enriching my Film Journal with the IMDB API</title>
-      <link>/post/film-journal-enrichment/</link>
-      <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
-      
-      <guid>/post/film-journal-enrichment/</guid>
-      <description>A while ago I made the decision to log every film I watched so that I could one day analyse this data in some way. With a year&amp;rsquo;s worth of films I thought it could be interesting to also enrich this with more information about the films using all of the data available from IMDB. Was it worth it? Let&amp;rsquo;s find out&amp;hellip;
-Choosing What to Analyse It&amp;rsquo;s always good to start with some initial questions you want to answer before any data analysis task.</description>
     </item>
     
     <item>

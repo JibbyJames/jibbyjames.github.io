@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>Analysing WhatsApp Data with BigQuery and Looker Studio</title>
+
+  
+  
+
+
+  <link href="//cdn.jsdelivr.net" rel="dns-prefetch">
+  <link href="//cdnjs.cloudflare.com" rel="dns-prefetch">
+  
+  <link href="//at.alicdn.com" rel="dns-prefetch">
+  
+  <link href="//fonts.googleapis.com" rel="dns-prefetch">
+  <link href="//fonts.gstatic.com" rel="dns-prefetch">
+  <link href="///disqus.com" rel="dns-prefetch">
+  <link href="//c.disquscdn.com" rel="dns-prefetch">
+
+  
+
+  
+  
+  
+    <meta name="description" content="WhatsApp is one of the most popular messaging apps in the world, with over 2 billion active users. It’s no surprise that many people want to analyse their WhatsApp data to gain insights into their conversations, including myself! In this post, I’ll detail how I used Python and BigQuery to analyze my WhatsApp data, covering everything from parsing the raw TXT export to visualizing the data. Let’s get started!
+Parsing the TXT Export Within WhatsApp it is possible to export chat data to a TXT file, by opening the options within individual or group chats, tapping &amp;ldquo;More&amp;rdquo; then &amp;ldquo;Export chat&amp;rdquo;.">
+  
+
+  
+  
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@_JibbyJames">
+    <meta name="twitter:title" content="Analysing WhatsApp Data with BigQuery and Looker Studio">
+    <meta name="twitter:description" content="WhatsApp is one of the most popular messaging apps in the world, with over 2 billion active users. It’s no surprise that many people want to analyse their WhatsApp data to gain insights into their conversations, including myself! In this post, I’ll detail how I used Python and BigQuery to analyze my WhatsApp data, covering everything from parsing the raw TXT export to visualizing the data. Let’s get started!
+Parsing the TXT Export Within WhatsApp it is possible to export chat data to a TXT file, by opening the options within individual or group chats, tapping &amp;ldquo;More&amp;rdquo; then &amp;ldquo;Export chat&amp;rdquo;.">
+    <meta name="twitter:image" content="/images/avatar.webp">
+  
+
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Analysing WhatsApp Data with BigQuery and Looker Studio">
+  <meta property="og:description" content="WhatsApp is one of the most popular messaging apps in the world, with over 2 billion active users. It’s no surprise that many people want to analyse their WhatsApp data to gain insights into their conversations, including myself! In this post, I’ll detail how I used Python and BigQuery to analyze my WhatsApp data, covering everything from parsing the raw TXT export to visualizing the data. Let’s get started!
+Parsing the TXT Export Within WhatsApp it is possible to export chat data to a TXT file, by opening the options within individual or group chats, tapping &amp;ldquo;More&amp;rdquo; then &amp;ldquo;Export chat&amp;rdquo;.">
+  <meta property="og:url" content="/post/whatsapp-metrics/">
+  <meta property="og:image" content="/images/avatar.webp">
+
+
+
+
+<meta name="generator" content="Hugo 0.111.3">
+
+
+<link rel="canonical" href="/post/whatsapp-metrics/">
+
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="format-detection" content="telephone=no,email=no,adress=no">
+<meta http-equiv="Cache-Control" content="no-transform">
+
+
+<meta name="robots" content="index,follow">
+<meta name="referrer" content="origin-when-cross-origin">
+<meta name="google-site-verification" content="_moDmnnBNVLBN1rzNxyGUGdPHE20YgbmrtzLIbxaWFc">
+<meta name="msvalidate.01" content="22596E34341DD1D17D6022C44647E587">
+
+
+
+
+
+<meta name="theme-color" content="#02b875">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="James Buckley">
+<meta name="msapplication-tooltip" content="James Buckley">
+<meta name='msapplication-navbutton-color' content="#02b875">
+<meta name="msapplication-TileColor" content="#02b875">
+<meta name="msapplication-TileImage" content="/icons/icon-144x144.webp">
+<link rel="icon" href="/icons/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.webp">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.webp">
+<link rel="icon" sizes="192x192" href="/icons/icon-192x192.webp">
+<link rel="apple-touch-icon" href="/icons/icon-152x152.webp">
+<link rel="manifest" href="/manifest.json">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NQNLPRX');</script>
+
+
+
+<link rel="preload" href="/styles/main-rendered.min.css" as="style">
+
+<link rel="preload" href="/styles/custom.min.css" as="style">
+<link rel="preload" href="https://fonts.googleapis.com/css?family=Lobster" as="style">
+<link rel="preload" href="/images/avatar.webp" as="image">
+<link rel="preload" href="/images/grey-prism.svg" as="image">
+
+
+<style>
+  body {
+    background: rgb(244, 243, 241) url('/images/grey-prism.svg') repeat fixed;
+  }
+</style>
+<link rel="stylesheet" href="/styles/main-rendered.min.css">
+
+<link rel="stylesheet" href="/styles/custom.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.2/dist/medium-zoom.min.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/video.js@7.3.0/dist/video-js.min.css">
+
+
+
+  
+  
+<!--[if lte IE 8]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-ie8@1.1.2/dist/videojs-ie8.min.js"></script>
+<![endif]-->
+
+<!--[if lte IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20180112/classList.min.js"></script>
+<![endif]-->
+
+
+</head>
+  <body>
+    <div class="suspension">
+      <a role="button" aria-label="Go to top" title="Go to top" class="to-top is-hide"><span class="icon icon-up" aria-hidden="true"></span></a>
+      
+        
+	<a role="button" aria-label="Go to comments" title="Go to comments" class="to-comment" href="#disqus_thread"><span class="icon icon-comment" aria-hidden="true"></span></a>
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <a href="/"><img class="avatar" src="/images/avatar.webp" alt="Avatar"></a>
+  
+  <h2 class="title"><a href="/">James Buckley</a></h2>
+  
+  <p class="subtitle">Think it ~ Build it ~ Use it ~ Share it</p>
+  <button class="menu-toggle" type="button" aria-label="Main Menu" aria-expanded="false" tab-index="0">
+    <span class="icon icon-menu" aria-hidden="true"></span>
+  </button>
+
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/about/">About</a>
+        </li>
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/resume/">Resume</a>
+        </li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list"><li class="social-item">
+          <a href="mailto:jjbuckley.42@gmail.com" title="Email" aria-label="Email">
+            <span class="icon icon-email" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//github.com/JibbyJames" rel="me" title="GitHub" aria-label="GitHub">
+	    <span class="icon icon-github" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//twitter.com/_JibbyJames" rel="me" title="Twitter" aria-label="Twitter">
+            <span class="icon icon-twitter" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//www.instagram.com/jibbyjames" rel="me" title="Instagram" aria-label="Instagram">
+            <span class="icon icon-instagram" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//www.linkedin.com/in/jamesjbuckley" rel="me" title="LinkedIn" aria-label="LinkedIn">
+            <span class="icon icon-linkedin" aria-hidden="true"></span>
+          </a>
+        </li></ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    
+    <header class="post-header" style="background: url(/media/images/whatsapp-background.jpg);">
+    
+      <h1 class="post-title"><p>Analysing WhatsApp Data with BigQuery and Looker Studio</p></h1>
+      <p class="post-meta"><span>May 6, 2023 · 17 min read</span></p>
+    </header>
+    <article class="post-content"><p>WhatsApp is one of the most popular messaging apps in the world, with over 2 billion active users. It’s no surprise that many people want to analyse their WhatsApp data to gain insights into their conversations, including myself! In this post, I’ll detail how I used Python and BigQuery to analyze my WhatsApp data, covering everything from parsing the raw TXT export to visualizing the data. Let’s get started!</p>
+<h2 id="parsing-the-txt-export">Parsing the TXT Export</h2>
+<p>Within WhatsApp it is possible to export chat data to a TXT file, by opening the options within individual or group chats, tapping &ldquo;More&rdquo; then &ldquo;Export chat&rdquo;. In order to take this file and upload its contents to BigQuery, I had to parse it into a format supported by BigQuery for uploads. Here is how the chat data appears in the TXT file:</p>
+<pre tabindex="0"><code>12/07/2022, 11:14 pm - Steve Jobs: Hello my name is Steve.
+12/07/2022, 11:17 pm - Bill Gates: Hi Steve, it&#39;s nice to meet you.
+</code></pre><p>In this file there is the date, the time, the name of the message sender and the content of the message. With this the three key fields for BigQuery can be created: datetime, author, content. There is some formatting in the TXT file to help parse each row into these fields which is described below. All of the initial parsing and cleaning of the exported file will be done with Python.</p>
+<h3 id="extracting-each-field-from-a-line-of-data">Extracting each field from a line of data</h3>
+<p>Extracting the datetime from a line of chat log data was done in the following way:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">re</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">datetime</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">datetime</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">line</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;12/07/2022, 11:14 pm - Steve Jobs: Hello my name is Steve.&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">datetime_str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">r</span><span style="color:#4e9a06">&#39;^(\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{4}</span><span style="color:#4e9a06">),\s\d(?:\d)?:\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">.</span><span style="color:#4e9a06">{1}</span><span style="color:#4e9a06">(am|pm)&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">group</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">datetime_obj</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">datetime</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strptime</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">datetime_str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;%m/</span><span style="color:#4e9a06">%d</span><span style="color:#4e9a06">/%Y, %I:%M</span><span style="color:#4e9a06">\xa0</span><span style="color:#4e9a06">%p&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">datetime_obj</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic"># This will output &#39;2022-12-07 23:14:00&#39;</span>
+</span></span></code></pre></div><p>Here’s what’s happening in the code:</p>
+<ul>
+<li>Import the <code>re</code> module and the <code>datetime</code> class from the <code>datetime</code> module.</li>
+<li>Define a string variable called <code>line</code> that contains the string to extract the datetime from.</li>
+<li>Use the <code>re.search()</code> method to search for a pattern in the string that matches a datetime format. The pattern is <code>r'^(\d{2}\/\d{2}\/\d{4}),\s\d(?:\d)?:\d{2}.{1}(am|pm)'</code>, which matches a date in the format of “MM/DD/YYYY” followed by a comma, then a space, then an hour in either 12-hour format followed by a colon and minutes, then either “am” or “pm”.</li>
+<li>Use the <code>.group()</code> method to extract the matched pattern from the string and assign it to a variable called <code>datetime_str</code>.</li>
+<li>Use the <code>strptime()</code> method to convert the extracted string into a datetime object. The first parameter is the string to convert, and the second parameter is a format string that specifies how to parse the string. In this case <code>%m/%d/%Y, %I:%M\xa0%p</code> is used, which matches the format of the extracted string.</li>
+</ul>
+<p>The above will only work if the date is in the &ldquo;12/07/2022, 11:14 pm&rdquo; format in the TXT file, which I&rsquo;ve read not all exports do (perhaps an iOS/Android thing). Using similar regex the author and content can be extracted:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">re</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">line</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;12/07/2022, 11:14 pm - Steve Jobs: Hello my name is Steve.&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">author</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">r</span><span style="color:#4e9a06">&#39;^\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{4}</span><span style="color:#4e9a06">,\s\d\d?:\d\d.(?:am|pm).-.(.*?):&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">group</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">author</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic"># This will output &#39;Steve Jobs&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">start</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">author</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">span</span><span style="color:#000;font-weight:bold">()[</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">content</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">r</span><span style="color:#4e9a06">&#39;(?&lt;=:\s).*$&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">start</span><span style="color:#000;font-weight:bold">:])</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">group</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strip</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">content</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#8f5902;font-style:italic"># This will output &#39;Hello my name is Steve.&#39;</span>
+</span></span></code></pre></div><p>The author value is extracted by simply looking for the text that comes after the datetime value and before the colon <code>:</code>, using a method similar to finding the datetime described above.</p>
+<p>To extract the content, the author is first searched for it in the line string using the <code>re.search()</code> method. The <code>.span()</code> method returns a tuple containing the start and end positions of the match. The end position of the match, which represents the index of the character immediately following the author&rsquo;s name, is obtained using <code>[1]</code>. This value is then assigned to a variable called <code>start</code>. Next, a pattern is searched for in the <code>line</code> string that matches any characters appearing after a colon and space (<code>: </code>). The positive lookbehind assertion, <code>(?&lt;=:\s)</code>, is utilized to ensure that the text to be matched is preceded by a colon and space. The pattern <code>.*$</code> is used to match any number of characters until the end of the string. The matched text is extracted from the string using <code>.group()</code> and assigned to a variable called <code>content</code>. Finally, any leading or trailing whitespace is removed from the matched text using <code>.strip()</code>.</p>
+<h3 id="handling-newline-characters">Handling Newline Characters</h3>
+<p>Newline characters are a common nuisance for data file parsing, and the WhatsApp TXT file is no exception. Chat messages containing multiple lines will appear on multiple lines in the exported file like so:</p>
+<pre tabindex="0"><code>12/07/2022, 11:14 pm - Steve Jobs: This is first message on single line.
+12/07/2022, 11:32 pm - Bill Gates: Start of second message
+Rest of second message.
+12/07/2022, 11:14 pm - Steve Jobs: final message.
+</code></pre><p>To capture the entire contents of a single message, it must be known that the <code>Rest of second message</code> line is part of the message sent in the line above. The datetime regex is reused for this, as all lines which start with the datetime are the start of a new message:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">_is_start_of_new_message</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#34;&#34;&#34;All lines starting with a datetime are considered the beginning of a new message.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">match</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">r</span><span style="color:#4e9a06">&#39;^(\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{4}</span><span style="color:#4e9a06">),\s\d(?:\d)?:\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">.</span><span style="color:#4e9a06">{1}</span><span style="color:#4e9a06">(am|pm)&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">True</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">False</span>
+</span></span></code></pre></div><p>This function will return <code>True</code> if the line being parsed is the start of a new message or not, which is needed when parsing the entire file.</p>
+<h3 id="parsing-the-entire-file">Parsing the Entire File</h3>
+<p>Now that individual fields can be extracted, these processes can be consolidated within a class. This class will iterate through each line of the file, extract the values, and store them to be outputted to a pandas DataFrame:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">re</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">copy</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">pandas</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">pd</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">dateutil.parser</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">parse</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">datetime</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">datetime</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">timedelta</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">WhatsAppParser</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">__init__</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">file_path</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_header</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_get_messages_from_file</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file_path</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">_get_absolute_file_path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">file_path</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">&#34;&#34;&#34;Return the absolute path for the target .txt file.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">abspath</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file_path</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">_get_messages_from_file</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">file_path</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">&#34;&#34;&#34;Return a DataFrame of cleaned WhatsApp messages.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        Args:
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">            file_path (str): Path to file.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        Returns:
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">            DataFrame: DataFrame of WhatsApp messages with fields: datetime, author, content.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">messages</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">[]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">path_to_file</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_get_absolute_file_path</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file_path</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># Can init previous date time with now, it doesn&#39;t matter too much.</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">previous_datetime</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">datetime</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">now</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#204a87">open</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">path_to_file</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">encoding</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;utf8&#34;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">file</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">row_number</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#204a87">enumerate</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_is_start_of_new_message</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000">message</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_construct_message</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">row_number</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">message</span> <span style="color:#204a87;font-weight:bold">is</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#8f5902;font-style:italic"># Increment second value to ensure order for messages sent during same minute.</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">message</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;datetime&#39;</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">minute</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#000">previous_datetime</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">minute</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#000">message</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;datetime&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">message</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;datetime&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#000">timedelta</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">seconds</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#ce5c00;font-weight:bold">+</span><span style="color:#000">previous_datetime</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">second</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#000">previous_datetime</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">message</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;datetime&#39;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#000">messages</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">message</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">elif</span> <span style="color:#204a87">any</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000">messages</span><span style="color:#000;font-weight:bold">[</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">][</span><span style="color:#4e9a06">&#39;content&#39;</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">+=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39; </span><span style="color:#4e9a06">{</span><span style="color:#000">line</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strip</span><span style="color:#000;font-weight:bold">()</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#39;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">else</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_header</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">append</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strip</span><span style="color:#000;font-weight:bold">())</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">messages</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">_construct_message</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">row_number</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">&#34;&#34;&#34;Fetch data from each line inside the file and returns a dict.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">message</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">datetime</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_get_datetime_from_line</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">author</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_get_author_from_line</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">content</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_get_content_from_line</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">author</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">message</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#39;datetime&#39;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">datetime</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;author&#39;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">author</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;content&#39;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000">content</span><span style="color:#000;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">except</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;Failed to extract data for line number [</span><span style="color:#4e9a06">{</span><span style="color:#000">row_number</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]. Skipping...&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">message</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">to_dataframe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">&#34;&#34;&#34;Convert the WhatsAppParser object into a pandas dataframe.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">pd</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">DataFrame</span><span style="color:#000;font-weight:bold">(</span><span style="color:#3465a4">self</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">_messages</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#5c35cc;font-weight:bold">@staticmethod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">_is_start_of_new_message</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">&#34;&#34;&#34;All lines starting with a datetime are considered the beginning of a new message.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">match</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">r</span><span style="color:#4e9a06">&#39;^(\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{4}</span><span style="color:#4e9a06">),\s\d(?:\d)?:\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">.</span><span style="color:#4e9a06">{1}</span><span style="color:#4e9a06">(am|pm)&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">True</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#204a87;font-weight:bold">False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#5c35cc;font-weight:bold">@staticmethod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">_get_datetime_from_line</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">&#34;&#34;&#34;Extract datetime data from a line.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">datetime_str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">r</span><span style="color:#4e9a06">&#39;^(\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{4}</span><span style="color:#4e9a06">),\s\d(?:\d)?:\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">.</span><span style="color:#4e9a06">{1}</span><span style="color:#4e9a06">(am|pm)&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">group</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># 12/07/2022, 11:16 pm</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">format</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#39;</span><span style="color:#4e9a06">%d</span><span style="color:#4e9a06">/%m/%Y, %I:%M %p&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">datetime_obj</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">datetime</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strptime</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">datetime_str</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#204a87">format</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">datetime_obj</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#5c35cc;font-weight:bold">@staticmethod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">_get_author_from_line</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">&#34;&#34;&#34;Extract author data from a line.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">author</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">r</span><span style="color:#4e9a06">&#39;^\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{2}</span><span style="color:#4e9a06">\/\d</span><span style="color:#4e9a06">{4}</span><span style="color:#4e9a06">,\s\d\d?:\d\d.(?:am|pm).-.(.*?):&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">group</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">author</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#5c35cc;font-weight:bold">@staticmethod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">_get_content_from_line</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">line</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">author</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#4e9a06">&#34;&#34;&#34;Extract content data from a line.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">start</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">author</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">span</span><span style="color:#000;font-weight:bold">()[</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">content</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">search</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">r</span><span style="color:#4e9a06">&#39;(?&lt;=:\s).*$&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">line</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">start</span><span style="color:#000;font-weight:bold">:])</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">group</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">strip</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">content</span>
+</span></span></code></pre></div><p>The below shows how this class would be used to create a DataFrame of WhatsApp data:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#000">whatsapp_txt_file</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#39;path-to-whatsapp-file/whatsapp-export.txt&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">messages_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">WhatsAppParser</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">whatsapp_txt_file</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">to_dataframe</span><span style="color:#000;font-weight:bold">()</span>
+</span></span></code></pre></div><p>There are two aspects in the full class worth highlighting:</p>
+<ol>
+<li>
+<p>When the line being parsed is not the start of a new line, after <code>self._is_start_of_new_message(line)</code> has returned false. When this happens, the entire content of the line is simply added to the previous record with <code>messages[-1]['content'] += f' {line.strip()}'</code>. After that it proceeds to the next line in the file.</p>
+</li>
+<li>
+<p>When multiple chat messages are sent within the same minute. The TXT export file does not include a seconds value, which means that any messages sent within the same minute will appear to have been sent at exactly the same time. This lack of distinction can lead to issues when trying to order the messages accurately. As the lines in the exported file are listed chronologically, The seconds value can be incremented with the following <code>message['datetime'] = message['datetime'] + timedelta(seconds=1+previous_datetime.second)</code>. The seconds value will reset to zero once a new message has been sent in a different minute window. Milliseconds could have been used to allow for more than 60 messages to be sent in a single minute, which doesn&rsquo;t tend to happen in my chats.</p>
+</li>
+</ol>
+<h2 id="uploading-to-bigquery">Uploading to BigQuery</h2>
+<p>In the previous section, I created a DataFrame object containing the chat data which is likely sufficient for some to start analysing the data or export it into a compatible format like CSV to be manually uploaded into BigQuery. If, like me, you scoff at the idea of doing anything manually if it can be automated, then read on while I proceed with uploading this DataFrame into BigQuery using Python.</p>
+<h3 id="using-google-apis">Using Google APIs</h3>
+<p>Shown below is a function that utilises the <code>bigquery</code> module from the <code>google.cloud</code> package. This function enables the uploading of the <code>messages_df</code> DataFrame into a table with a name specified by the <code>table_name</code> parameter. Note the placeholders for the GCP Project ID and BigQuery Dataset ID, which should be replaced accordingly:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">google.cloud</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">bigquery</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">upload_to_bigquery</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">table_name</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#34;&#34;&#34;Upload the DataFrame to BigQuery.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    Args:
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        messages_df (pandas.DataFrame): DataFrame of WhatsApp messages.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        table_name (str): Name of BigQuery table for the WhatsApp messages.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Construct a BigQuery client object</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">project_id</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#39;[YOUR-GCP-PROJECT-ID]&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">bigquery</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Client</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">project</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">project_id</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Create table name</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">dataset_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#39;[YOUR-DATASET-ID]&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">table_id</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;</span><span style="color:#4e9a06">{</span><span style="color:#000">project_id</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">.</span><span style="color:#4e9a06">{</span><span style="color:#000">dataset_name</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">.</span><span style="color:#4e9a06">{</span><span style="color:#000">table_name</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Create the load job config</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">job_config</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">bigquery</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">LoadJobConfig</span><span style="color:#000;font-weight:bold">(</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">schema</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000;font-weight:bold">[</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">bigquery</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">SchemaField</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;datetime&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">bigquery</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">enums</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">SqlTypeNames</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">DATETIME</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">bigquery</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">SchemaField</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;author&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">bigquery</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">enums</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">SqlTypeNames</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">STRING</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">bigquery</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">SchemaField</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;content&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">bigquery</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">enums</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">SqlTypeNames</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">STRING</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000;font-weight:bold">],</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">write_disposition</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;WRITE_APPEND&#34;</span><span style="color:#000;font-weight:bold">,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">create_disposition</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;CREATE_IF_NEEDED&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Get number of rows currently added to the table, if any.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">table</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get_table</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">table_id</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">current_row_count</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">table</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">num_rows</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">except</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;Ran into error when fetching table size for [</span><span style="color:#4e9a06">{</span><span style="color:#000">table_id</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]. Assuming it does not exist yet.&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">current_row_count</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Make an API request</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">job</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">load_table_from_dataframe</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">table_id</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">job_config</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">job_config</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">job</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">result</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Get number of rows added to the table</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">table</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get_table</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">table_id</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">after_upload_row_count</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">table</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">num_rows</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Added [</span><span style="color:#4e9a06">{</span><span style="color:#000">after_upload_row_count</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">current_row_count</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">] rows to table [</span><span style="color:#4e9a06">{</span><span style="color:#000">table_id</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">]&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>This function takes two arguments: a Pandas DataFrame called <code>messages_df</code> that contains WhatsApp messages, and a string called <code>table_name</code> that specifies the name of the BigQuery table to upload the messages to. A BigQuery client object is created and a string called <code>table_id</code> that specifies the full ID of the BigQuery table to upload the messages to. A load job configuration object is then created that specifies the schema of the data being uploaded and how to handle conflicts with existing data in the table.</p>
+<p>The next few lines attempt to get the number of rows currently in the BigQuery table specified by <code>table_id</code>. If an error occurs (e.g., if the table doesn’t exist yet), it prints an error message and assumes that there are no rows in the table. Lastly a load job is created that uploads the data in <code>messages_df</code> to the BigQuery table specified by <code>table_id</code>, followed by fetching the number of rows in the BigQuery table after uploading the data to print out how many rows were added.</p>
+<h3 id="enriching-and-deduplicating-the-data">Enriching and Deduplicating the data</h3>
+<p>If this logic were to be run as it is then each time a new WhatsApp file was imported it would append the data to the table, resulting in a lot of duplicated rows. The table data could simply be overwritten, but these exports have a <a href="https://faq.whatsapp.com/1180414079177245/?cms_platform=android">limit of the most recent 40,000 messages</a> so overwriting any messages that potentially an not be recovered is best to be avoided.</p>
+<p>The solution I came up with was to simply do a <code>DISTINCT *</code> on the table after an upload, which is done at the end of the <code>upload_to_bigquery</code> function above:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># Create query that will remove any duplicate rows from table and add row sequence.</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">query</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    SELECT
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        DISTINCT *,
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        ROW_NUMBER() OVER (PARTITION BY DATE(datetime) ORDER BY datetime ASC) AS day_sequence_num
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    FROM
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        `</span><span style="color:#4e9a06">{</span><span style="color:#000">table_id</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">`&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000">job_config</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">bigquery</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">QueryJobConfig</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">destination</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">table_id</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">write_disposition</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;WRITE_TRUNCATE&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># Make an API request</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">query_job</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">query</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">query</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">job_config</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">job_config</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">query_job</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">result</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># Get number of rows removed during deduplication process</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">table</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get_table</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">table_id</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#000">after_distinct_row_count</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">table</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">num_rows</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Removed [</span><span style="color:#4e9a06">{</span><span style="color:#000">after_upload_row_count</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">after_distinct_row_count</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">] duplicate rows leaving [</span><span style="color:#4e9a06">{</span><span style="color:#000">after_distinct_row_count</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">] unique rows in table.&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>I&rsquo;m sure there is a more optimised and scalable solution for this type of problem, but for my purposes it&rsquo;ll do.</p>
+<p>There is also an additional field which I added to make some later data analysis easier, which is a <code>day_sequence_num</code> field. This is the sequence of the message for the day it was sent, allowing me to quickly know what was the first message sent. Again I could likely optimise this but found it to be the quickest solution when working with my visualisation tool.</p>
+<h3 id="parsing-the-filename">Parsing the filename</h3>
+<p>Lastly, there was one final bit of automation I wrote to help with exporting multiple chat logs in their own tables, which was to read the name of the raw export file. The name of the exported file is always something like this:</p>
+<pre tabindex="0"><code>WhatsApp Chat with [NAME].txt
+</code></pre><p>Below is some logic which reads that <code>[NAME]</code> value and outputs it to the following format (<code>name_all_messages</code>):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">process_chat_file_name</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file_name</span><span style="color:#000;font-weight:bold">:</span><span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">-&gt;</span> <span style="color:#204a87">str</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#34;&#34;&#34;Parse the file name, returning a suitable table name if successful.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    Args:
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        file_name (str): The raw file name of the export.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    Returns:
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        str: Formatted table name.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">table_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Check if the file name matches the required format</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">pattern</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">r</span><span style="color:#4e9a06">&#39;^WhatsApp Chat with ([a-zA-Z]+) ([a-zA-Z]+)\.txt$&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">match</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">re</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">match</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">pattern</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">file_name</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#204a87;font-weight:bold">not</span> <span style="color:#000">match</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;Invalid file name format: </span><span style="color:#4e9a06">{</span><span style="color:#000">file_name</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">table_name</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Extract the first and last name from the file name</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">first_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">match</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">group</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">last_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">match</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">group</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">2</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Generate the output string</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">table_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#39;</span><span style="color:#4e9a06">{</span><span style="color:#000">first_name</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">_</span><span style="color:#4e9a06">{</span><span style="color:#000">last_name</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">_all_messages&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">table_name</span>
+</span></span></code></pre></div><h3 id="create-a-cloud-function">Create a Cloud Function</h3>
+<p>The automation doesn&rsquo;t stop there! I wanted to simply be able to add the new exported file to a Google Cloud Storage bucket and have it do all of the python logic described so far. For this, I created a <a href="https://cloud.google.com/functions">Cloud Function</a> which triggers when new files are added to a bucket.</p>
+<p>This would be the function that is first called for this event:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">re</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">tempfile</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">google.cloud</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">bigquery</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">storage</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">whatsapp_parser</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">WhatsAppParser</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">process_whatsapp_file</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">data</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">context</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#4e9a06">&#34;&#34;&#34;Triggered by a change to a Cloud Storage bucket.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    Args:
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        data (dict): The Cloud Functions event payload.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">        context (google.cloud.functions.Context): Metadata of triggering event.
+</span></span></span><span style="display:flex;"><span><span style="color:#4e9a06">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Extract bucket and file details from event message</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">bucket_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">data</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;bucket&#39;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">file_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">data</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;name&#39;</span><span style="color:#000;font-weight:bold">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">table_name</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">process_chat_file_name</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file_name</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">table_name</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#39;&#39;</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">return</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Create a Cloud Storage client object</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">storage_client</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">storage</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">Client</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Download file to local temp file</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">_</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">temp_local_filename</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">tempfile</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">mkstemp</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">bucket</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">storage_client</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">bucket</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">bucket_name</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">blob</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">bucket</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">blob</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">file_name</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">blob</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">download_to_filename</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">temp_local_filename</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Parse file with WhatsAppParser</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">messages_df</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">WhatsAppParser</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">temp_local_filename</span><span style="color:#000;font-weight:bold">)</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">to_dataframe</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Upload to BigQuery</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">upload_to_bigquery</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">messages_df</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">table_name</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Delete local temp file</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">remove</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">temp_local_filename</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>The above script first imports necessary modules: os, re, tempfile, google.cloud.bigquery, google.cloud.storage, and a custom module called whatsapp_parser which is the WhatsAppParser class detailed in the first section. The function <code>process_whatsapp_file</code> is what will be executed when the Cloud Storage bucket is changed. This function takes two arguments: <code>data</code> (a dictionary representing the event payload) and <code>context</code> (metadata of the triggering event).</p>
+<p>The function extracts relevant details from the event message, such as the bucket name, file name, and infers a table name based on the chat file name. It then creates a client object for Google Cloud Storage, which is used to download the file from the Cloud Storage bucket to a temporary local file using a generated unique filename.</p>
+<p>The <code>WhatsAppParser</code> module is then used to parse the downloaded file and convert it into a DataFrame object named messages_df. The <code>messages_df</code> DataFrame is then uploaded to BigQuery using the <code>upload_to_bigquery</code> function detailed earlier. After the DataFrame has been successfully uploaded, the script deletes the local temporary file to clean up the disk space. Cloud Functions require a <code>requirements.txt</code> file to know which additional packages to install, which can be found along with the complete Cloud Function in my <a href="https://github.com/JibbyJames/whatsapp-metrics">GitHub</a>.</p>
+<h2 id="some-basic-metrics">Some Basic Metrics</h2>
+<p>So I finally have the WhatsApp data in BigQuery after parsing the raw exported file and uploading it with Python. I can now query this data and answer some basic questions one might have about their chat logs (note the placeholder for the BigQuery Table ID):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">SELECT</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#000">author</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">COUNT</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">content</span><span style="color:#000;font-weight:bold">)</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">AS</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">total_messages</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">SUM</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ARRAY_LENGTH</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">SPLIT</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">content</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39; &#39;</span><span style="color:#000;font-weight:bold">)))</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">as</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">total_words</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#000">ROUND</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">AVG</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ARRAY_LENGTH</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">SPLIT</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">content</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39; &#39;</span><span style="color:#000;font-weight:bold">))),</span><span style="color:#0000cf;font-weight:bold">4</span><span style="color:#000;font-weight:bold">)</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">as</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">average_words_per_message</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">MAX</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">ARRAY_LENGTH</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">SPLIT</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">content</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#39; &#39;</span><span style="color:#000;font-weight:bold">)))</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">as</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">most_words_in_single_message</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">MAX</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">LENGTH</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">content</span><span style="color:#000;font-weight:bold">))</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">as</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">longest_single_message</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">FROM</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#ce5c00;font-weight:bold">`</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">YOUR</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">GCP</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">PROJECT</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">ID</span><span style="color:#000;font-weight:bold">].[</span><span style="color:#000">YOUR</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">DATASET</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">ID</span><span style="color:#000;font-weight:bold">].[</span><span style="color:#000">YOUR</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#204a87;font-weight:bold">TABLE</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">ID</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">`</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">GROUP</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">BY</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span></code></pre></div><p>I&rsquo;ll assume you already have an understanding of SQL so will just explain the columns returned by this query:</p>
+<ul>
+<li><code>author</code>: It selects the <code>author</code> column from the table, which is then used in the <code>GROUP BY</code> clause so that the calculations in the <code>SELECT</code> clause will be performed separately for each unique <code>author</code> in the table.</li>
+<li><code>COUNT(content) AS total_messages</code>: It calculates the total number of messages for each <code>author</code>.</li>
+<li><code>SUM(ARRAY_LENGTH(SPLIT(content, ' '))) as total_words</code>: It calculates the total number of words in all the messages for each <code>author</code>. It splits the <code>content</code> column by spaces, counts the number of resulting elements (words), and sums them up.</li>
+<li><code>ROUND(AVG(ARRAY_LENGTH(SPLIT(content, ' '))),4) as average_words_per_message</code>: It calculates the average number of words per message for each <code>author</code>. It follows the same logic as above but uses the <code>AVG</code> function to calculate the average and rounds it to four decimal places.</li>
+<li><code>MAX(ARRAY_LENGTH(SPLIT(content, ' '))) as most_words_in_single_message</code>: It calculates the maximum number of words in a single message for each <code>author</code>. It again splits the <code>content</code> column by spaces, counts the words in each message, and selects the maximum value.</li>
+<li><code>MAX(LENGTH(content)) as longest_single_message</code>: It calculates the length of the longest single message (in terms of characters) for each <code>author</code>.</li>
+</ul>
+<p>How about emoji usage? Here&rsquo;s the query for knowing the frequency of emojis used (note the placeholders for the author values in the table and the BigQuery Table ID):</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">SELECT</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#000">emoji</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">COUNT</span><span style="color:#000;font-weight:bold">(</span><span style="color:#ce5c00;font-weight:bold">*</span><span style="color:#000;font-weight:bold">)</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">AS</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">frequency</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">COUNT</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">CASE</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">WHEN</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">author</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;[AUTHOR ONE]&#34;</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">THEN</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">emoji</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">END</span><span style="color:#000;font-weight:bold">)</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">AS</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">author_one_frequency</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">COUNT</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">CASE</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">WHEN</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">author</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#4e9a06">&#34;[AUTHOR TWO]&#34;</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">THEN</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">emoji</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">END</span><span style="color:#000;font-weight:bold">)</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">AS</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">author_two_frequency</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">FROM</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000;font-weight:bold">(</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">SELECT</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#000">author</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#000">REGEXP_EXTRACT_ALL</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">content</span><span style="color:#000;font-weight:bold">,</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">r</span><span style="color:#4e9a06">&#39;[\x{1F600}-\x{1F64F}]|[\x{2700}-\x{27BF}]|[\x{1F900}-\x{1F9FF}]|[\x{1F680}-\x{1F6FF}]|[\x{1F1E0}-\x{1F1FF}]|[:][\)\(PpoO\\\/DdSs]|&lt;3&#39;</span><span style="color:#000;font-weight:bold">)</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">AS</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">emojis</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">FROM</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">    </span><span style="color:#ce5c00;font-weight:bold">`</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">YOUR</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">GCP</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">PROJECT</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">ID</span><span style="color:#000;font-weight:bold">].[</span><span style="color:#000">YOUR</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">DATASET</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">ID</span><span style="color:#000;font-weight:bold">].[</span><span style="color:#000">YOUR</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#204a87;font-weight:bold">TABLE</span><span style="color:#ce5c00;font-weight:bold">-</span><span style="color:#000">ID</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">`</span><span style="color:#000;font-weight:bold">)</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">CROSS</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">JOIN</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#204a87;font-weight:bold">UNNEST</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">emojis</span><span style="color:#000;font-weight:bold">)</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">AS</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#000">emoji</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">GROUP</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">BY</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#000">emoji</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline"></span><span style="color:#204a87;font-weight:bold">ORDER</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">BY</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span><span style="display:flex;"><span><span style="color:#f8f8f8;text-decoration:underline">  </span><span style="color:#0000cf;font-weight:bold">2</span><span style="color:#f8f8f8;text-decoration:underline"> </span><span style="color:#204a87;font-weight:bold">DESC</span><span style="color:#f8f8f8;text-decoration:underline">
+</span></span></span></code></pre></div><p>As this query has a few different parts to it, here&rsquo;s a more detailed explanation on what is happening:</p>
+<ol>
+<li>
+<p>The query starts with the <code>SELECT</code> clause, which specifies the columns to be included in the result.</p>
+<ul>
+<li><code>emoji</code>: It selects the <code>emoji</code> column.</li>
+<li><code>COUNT(*) AS frequency</code>: It calculates the frequency of each <code>emoji</code> occurrence.</li>
+<li><code>COUNT(CASE WHEN author = &quot;[AUTHOR ONE]&quot; THEN emoji END) AS author_one_frequency</code>: It calculates the frequency of each <code>emoji</code> occurrence specifically for <code>[AUTHOR ONE]</code>.</li>
+<li><code>COUNT(CASE WHEN author = &quot;[AUTHOR TWO]&quot; THEN emoji END) AS author_two_frequency</code>: It calculates the frequency of each <code>emoji</code> occurrence specifically for <code>[AUTHOR TWO]</code>.</li>
+</ul>
+</li>
+<li>
+<p>The <code>FROM</code> clause contains a subquery. The subquery selects the <code>author</code> column and extracts all occurrences of emojis from the <code>content</code> column using a regular expression pattern. The extracted emojis are stored in an array called <code>emojis</code>.</p>
+</li>
+<li>
+<p>The outer query performs a <code>CROSS JOIN</code> with the <code>UNNEST</code> function on the <code>emojis</code> array, which essentially flattens the array into individual rows. This creates a row for each occurrence of an emoji.</p>
+</li>
+<li>
+<p>The <code>GROUP BY</code> clause groups the result set by the <code>emoji</code> column, so all occurrences of the same emoji are grouped together.</p>
+</li>
+<li>
+<p>The <code>ORDER BY</code> clause sorts the result set in descending order based on the second column (frequency) to show the emojis with the highest frequency first.</p>
+</li>
+</ol>
+<p>In summary, the query retrieves information about the frequency of emojis in a specified table. It calculates the overall frequency and frequency for specific authors, sorts the emojis based on frequency in descending order, and presents the result.</p>
+<h2 id="visualising-the-data">Visualising the Data</h2>
+<p>When I started out this little project of analysing my WhatsApp data, I mainly wanted to see some basic information presented in a dashboard rather than do anything particularly clever with the data (although I do have some ideas). My dashboard tool of choice is Looker Studio (formally Data Studio) which I use most often in my professional life. Lots more dimensions and metrics can be easily created without adding them to the table directly, allowing me to create a simple overview page shown below:</p>
+<p><img src="/media/images/whatsapp-lookerstudio.png" alt="alt text" title="Overview of WhatsApp chat data displayed used Looker Studio"></p>
+<p>In this simple dashboard I can see easily the most frequent times of the day and week when messages are being sent, with some metrics around the proportion of these messages between each author shown in the top right. This page serves as an initial overview to the WhatsApp data, and I plan to add more pages to it with more areas of analysis.</p>
+</article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="/tags/python"><span class="tag">python</span></a></li>
+        
+          <li><a href="/tags/data-studio"><span class="tag">data studio</span></a></li>
+        
+          <li><a href="/tags/visualisations"><span class="tag">visualisations</span></a></li>
+        
+          <li><a href="/tags/whatsapp"><span class="tag">whatsapp</span></a></li>
+        
+          <li><a href="/tags/bigquery"><span class="tag">bigquery</span></a></li>
+        
+          <li><a href="/tags/data-analysis"><span class="tag">data analysis</span></a></li>
+        
+          <li><a href="/tags/looker-studio"><span class="tag">looker studio</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        
+      </p>
+    </footer>
+    
+      <div id="disqus_thread">
+    <div id="disqus_center">
+        <button id="disqus_show_comments_btn">Show Comments</button>
+    </div>
+</div>
+<script type="text/javascript">
+
+    
+    var loadDisqus = function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'jibbyjames';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }
+
+    
+    if(document.location.hash == "#disqus_thread") {
+        loadDisqus();
+    }
+
+    
+    var button = document.getElementById('disqus_show_comments_btn');
+    button.onclick = function(){ loadDisqus(); };
+
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      
+    
+  </section>
+  
+<footer class="site-footer">
+  <p>© 2023 James Buckley - All Rights Reserved</p>
+  
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@15.0.0/dist/smooth-scroll.min.js"></script>
+
+
+
+<script async src="https://cdn.jsdelivr.net/npm/video.js@7.3.0/dist/video.min.js"></script>
+
+
+
+
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    },
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
+</script>
+
+
+
+
+<script id="dsq-count-scr" src="//jibbyjames.disqus.com/count.js" async></script>
+
+
+
+<script src="/scripts/index.min.js"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('\/service-worker.js').then(function() {
+      console.log('[ServiceWorker] Registered');
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+  </body>
+</html>

@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© James Buckley</copyright>
-    <lastBuildDate>Sat, 06 May 2023 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 13 Oct 2023 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Lost Data and the Power of Reverse Engineering</title>
+      <link>/post/lost-data-and-the-power-of-reverse-engineering/</link>
+      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/post/lost-data-and-the-power-of-reverse-engineering/</guid>
+      <description>Have you ever accidentally deleted an entire database worth of data? This was precisely the nightmare I found myself in recently with my personal budget app after trying to tidy up some old transactions. Fortunately I found an old backup file, but it was over 18 months old which seemed far too big of a gap of data for me to accept. Thus began a journey full of highs and lows to rebuild the missing information using other data sources and digging into the source code of the app itself, which I will describe below.</description>
+    </item>
+    
     <item>
       <title>Analysing WhatsApp Data with BigQuery and Looker Studio</title>
       <link>/post/whatsapp-metrics/</link>

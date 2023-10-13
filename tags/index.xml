@@ -7,7 +7,52 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© James Buckley</copyright>
-    <lastBuildDate>Sat, 06 May 2023 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 13 Oct 2023 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>android</title>
+      <link>/tags/android/</link>
+      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>encryption</title>
+      <link>/tags/encryption/</link>
+      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/encryption/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>java</title>
+      <link>/tags/java/</link>
+      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>python</title>
+      <link>/tags/python/</link>
+      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>reverse engineering</title>
+      <link>/tags/reverse-engineering/</link>
+      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/reverse-engineering/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>bigquery</title>
       <link>/tags/bigquery/</link>
@@ -41,15 +86,6 @@
       <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
       
       <guid>/tags/looker-studio/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>python</title>
-      <link>/tags/python/</link>
-      <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/python/</guid>
       <description></description>
     </item>
     

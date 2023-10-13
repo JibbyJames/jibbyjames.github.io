@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>Lost Data and the Power of Reverse Engineering</title>
+
+  
+  
+
+
+  <link href="//cdn.jsdelivr.net" rel="dns-prefetch">
+  <link href="//cdnjs.cloudflare.com" rel="dns-prefetch">
+  
+  <link href="//at.alicdn.com" rel="dns-prefetch">
+  
+  <link href="//fonts.googleapis.com" rel="dns-prefetch">
+  <link href="//fonts.gstatic.com" rel="dns-prefetch">
+  <link href="///disqus.com" rel="dns-prefetch">
+  <link href="//c.disquscdn.com" rel="dns-prefetch">
+
+  
+
+  
+  
+  
+    <meta name="description" content="Have you ever accidentally deleted an entire database worth of data? This was precisely the nightmare I found myself in recently with my personal budget app after trying to tidy up some old transactions. Fortunately I found an old backup file, but it was over 18 months old which seemed far too big of a gap of data for me to accept. Thus began a journey full of highs and lows to rebuild the missing information using other data sources and digging into the source code of the app itself, which I will describe below.">
+  
+
+  
+  
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@_JibbyJames">
+    <meta name="twitter:title" content="Lost Data and the Power of Reverse Engineering">
+    <meta name="twitter:description" content="Have you ever accidentally deleted an entire database worth of data? This was precisely the nightmare I found myself in recently with my personal budget app after trying to tidy up some old transactions. Fortunately I found an old backup file, but it was over 18 months old which seemed far too big of a gap of data for me to accept. Thus began a journey full of highs and lows to rebuild the missing information using other data sources and digging into the source code of the app itself, which I will describe below.">
+    <meta name="twitter:image" content="/images/avatar.webp">
+  
+
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Lost Data and the Power of Reverse Engineering">
+  <meta property="og:description" content="Have you ever accidentally deleted an entire database worth of data? This was precisely the nightmare I found myself in recently with my personal budget app after trying to tidy up some old transactions. Fortunately I found an old backup file, but it was over 18 months old which seemed far too big of a gap of data for me to accept. Thus began a journey full of highs and lows to rebuild the missing information using other data sources and digging into the source code of the app itself, which I will describe below.">
+  <meta property="og:url" content="/post/lost-data-and-the-power-of-reverse-engineering/">
+  <meta property="og:image" content="/images/avatar.webp">
+
+
+
+
+<meta name="generator" content="Hugo 0.111.3">
+
+
+<link rel="canonical" href="/post/lost-data-and-the-power-of-reverse-engineering/">
+
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="format-detection" content="telephone=no,email=no,adress=no">
+<meta http-equiv="Cache-Control" content="no-transform">
+
+
+<meta name="robots" content="index,follow">
+<meta name="referrer" content="origin-when-cross-origin">
+<meta name="google-site-verification" content="_moDmnnBNVLBN1rzNxyGUGdPHE20YgbmrtzLIbxaWFc">
+<meta name="msvalidate.01" content="22596E34341DD1D17D6022C44647E587">
+
+
+
+
+
+<meta name="theme-color" content="#02b875">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="James Buckley">
+<meta name="msapplication-tooltip" content="James Buckley">
+<meta name='msapplication-navbutton-color' content="#02b875">
+<meta name="msapplication-TileColor" content="#02b875">
+<meta name="msapplication-TileImage" content="/icons/icon-144x144.webp">
+<link rel="icon" href="/icons/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.webp">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.webp">
+<link rel="icon" sizes="192x192" href="/icons/icon-192x192.webp">
+<link rel="apple-touch-icon" href="/icons/icon-152x152.webp">
+<link rel="manifest" href="/manifest.json">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NQNLPRX');</script>
+
+
+
+<link rel="preload" href="/styles/main-rendered.min.css" as="style">
+
+<link rel="preload" href="/styles/custom.min.css" as="style">
+<link rel="preload" href="https://fonts.googleapis.com/css?family=Lobster" as="style">
+<link rel="preload" href="/images/avatar.webp" as="image">
+<link rel="preload" href="/images/grey-prism.svg" as="image">
+
+
+<style>
+  body {
+    background: rgb(244, 243, 241) url('/images/grey-prism.svg') repeat fixed;
+  }
+</style>
+<link rel="stylesheet" href="/styles/main-rendered.min.css">
+
+<link rel="stylesheet" href="/styles/custom.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.2/dist/medium-zoom.min.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/video.js@7.3.0/dist/video-js.min.css">
+
+
+
+  
+  
+<!--[if lte IE 8]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-ie8@1.1.2/dist/videojs-ie8.min.js"></script>
+<![endif]-->
+
+<!--[if lte IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20180112/classList.min.js"></script>
+<![endif]-->
+
+
+</head>
+  <body>
+    <div class="suspension">
+      <a role="button" aria-label="Go to top" title="Go to top" class="to-top is-hide"><span class="icon icon-up" aria-hidden="true"></span></a>
+      
+        
+	<a role="button" aria-label="Go to comments" title="Go to comments" class="to-comment" href="#disqus_thread"><span class="icon icon-comment" aria-hidden="true"></span></a>
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <a href="/"><img class="avatar" src="/images/avatar.webp" alt="Avatar"></a>
+  
+  <h2 class="title"><a href="/">James Buckley</a></h2>
+  
+  <p class="subtitle">Think it ~ Build it ~ Use it ~ Share it</p>
+  <button class="menu-toggle" type="button" aria-label="Main Menu" aria-expanded="false" tab-index="0">
+    <span class="icon icon-menu" aria-hidden="true"></span>
+  </button>
+
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/about/">About</a>
+        </li>
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/resume/">Resume</a>
+        </li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list"><li class="social-item">
+          <a href="mailto:jjbuckley.42@gmail.com" title="Email" aria-label="Email">
+            <span class="icon icon-email" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//github.com/JibbyJames" target="_blank" rel="me " title="GitHub" aria-label="GitHub">
+	    <span class="icon icon-github" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//twitter.com/_JibbyJames" target="_blank" rel="me " title="Twitter" aria-label="Twitter">
+            <span class="icon icon-twitter" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//www.instagram.com/jibbyjames" target="_blank" rel="me " title="Instagram" aria-label="Instagram">
+            <span class="icon icon-instagram" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//www.linkedin.com/in/jamesjbuckley" target="_blank" rel="me " title="LinkedIn" aria-label="LinkedIn">
+            <span class="icon icon-linkedin" aria-hidden="true"></span>
+          </a>
+        </li></ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    
+    <header class="post-header" style="background: url(/media/images/bookkeeping-papers.webp);">
+    
+      <h1 class="post-title"><p>Lost Data and the Power of Reverse Engineering</p></h1>
+      <p class="post-meta"><span>Oct 13, 2023 · 10 min read</span></p>
+    </header>
+    <article class="post-content"><p>Have you ever accidentally deleted an entire database worth of data? This was precisely the nightmare I found myself in recently with my personal budget app after trying to tidy up some old transactions. Fortunately I found an old backup file, but it was over 18 months old which seemed far too big of a gap of data for me to accept. Thus began a journey full of highs and lows to rebuild the missing information using other data sources and digging into the source code of the app itself, which I will describe below.</p>
+<h2 id="the-backup-file-mystery">The Backup File Mystery</h2>
+<p>The budgeting app I am using is called Monefy for Android, and while it does support exported data to an easily readable CSV, data can only be &ldquo;restored&rdquo; from a bespoke backup file. If I was to restore my missing data then I&rsquo;d need to understand what this backup file was. This file has no type, and opening it in something like notepad revealed no clues as to what it was. In order to unlock the secrets of this file I&rsquo;d need to learn how it is created, which required inspecting the app code which creates.</p>
+<p>The file format used for installing and packaging apps on Android is called an APK (Android Package Kit). You can find an app&rsquo;s APK online, and other online tools which can decompile this packaged file to let you review the code used to build it. Most of the time it&rsquo;s a mess to navigate through (at least in my experience) but you can sometimes stumble across something insightful which I fortunately did with the Monefy App.</p>
+<p>It seemed as if all logic related to the backup and restore process was found in a DatabaseBackupHelper.java file. Within this file I learned that the backup file was just an encrypted database, and the key for encrypting it was miraculously stored right there in the file too.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">DatabaseBackupHelper</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">static</span> <span style="color:#204a87;font-weight:bold">final</span> <span style="color:#000">String</span> <span style="color:#000">BACKUP_KEY</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;MyDifficultPassw&#34;</span><span style="color:#ce5c00;font-weight:bold">;</span>  <span style="color:#8f5902;font-style:italic">// &lt;- This was seriously the encryption password.
+</span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"></span>    <span style="color:#ce5c00;font-weight:bold">...</span>
+</span></span></code></pre></div><p>Within the rest of the file I discovered that it was a SQLite database file that was being encrypted to create the backup file, interesting!</p>
+<p>While you can decompile an APK file to see the code contents, you can&rsquo;t just change a few lines and recompile it into a different app (at least not easily). The challenge now was to find a way to execute this logic myself and use it to create and parse my own backup files.</p>
+<h2 id="the-return-to-java">The Return to Java</h2>
+<p>Within the file contained standard Java encryption and decryption methods, so I looked up a simple example from CodeJava as a starting point:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">jbpackage.CryptoUtils</span><span style="color:#ce5c00;font-weight:bold">;</span> 
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">java.io.File</span><span style="color:#ce5c00;font-weight:bold">;</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"> * A tester for the CryptoUtils class.
+</span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"> * @author www.codejava.net
+</span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">CryptoUtilsTest</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">public</span> <span style="color:#204a87;font-weight:bold">static</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">main</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">String</span><span style="color:#ce5c00;font-weight:bold">[]</span> <span style="color:#000">args</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">String</span> <span style="color:#000">key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;MyDifficultPassw&#34;</span><span style="color:#ce5c00;font-weight:bold">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">File</span> <span style="color:#000">inputFile</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">File</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;monefy_backup&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">File</span> <span style="color:#000">decryptedFile</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">new</span> <span style="color:#000">File</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#4e9a06">&#34;monefy_backup_decrypted.db&#34;</span><span style="color:#ce5c00;font-weight:bold">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic">// I also tested encrypting
+</span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#8f5902;font-style:italic">//File inputFile = new File(&#34;monefy_backup_new.db&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#8f5902;font-style:italic">//File encryptedFile = new File(&#34;monefy_backup_encrypted&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"></span>         
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">try</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">CryptoUtils</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">decrypt</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">key</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">inputFile</span><span style="color:#ce5c00;font-weight:bold">,</span> <span style="color:#000">decryptedFile</span><span style="color:#ce5c00;font-weight:bold">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8f5902;font-style:italic">//CryptoUtils.encrypt(key, inputFile, encryptedFile);
+</span></span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"></span>        <span style="color:#ce5c00;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">catch</span> <span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">Exception</span> <span style="color:#000">ex</span><span style="color:#ce5c00;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">System</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">out</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">println</span><span style="color:#ce5c00;font-weight:bold">(</span><span style="color:#000">ex</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">getMessage</span><span style="color:#ce5c00;font-weight:bold">());</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">ex</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#c4a000">printStackTrace</span><span style="color:#ce5c00;font-weight:bold">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#ce5c00;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ce5c00;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ce5c00;font-weight:bold">}</span>
+</span></span></code></pre></div><p>I hadn&rsquo;t written any Java in a while (it was the first programming language I learned though) so most of the time during this stage was relearning how to run Java. Once I eventually figured that out I was able to successfully run the above logic. I tested the validity of the decrypted SQLite db file using an online viewer and could see all of the data, it was beautiful, all my transactions were visible in the database a moment of true eureka. It wasn&rsquo;t my missing data though, but I was making great progress with understanding how the backup file worked, which I knew I&rsquo;d need to recreate with records that I added myself.</p>
+<h2 id="the-switch-to-python">The Switch to Python</h2>
+<p>Rather than continuing to battle with Java I decided to transition to a language I was more used to using for the decryption process: Python. This task proved more difficult than expected due to the differences in the encryption libraries used by both. After some investigation, I found that the <code>javax.crypto.Cipher</code> module defaults to the less secure &ldquo;ECB&rdquo; mode when using the &ldquo;AES&rdquo; algorithm.</p>
+<p>For those unfamiliar with these &ldquo;modes&rdquo;, in encryption, the mode determines how to repeatedly apply a cipher&rsquo;s single-block operation to securely transform amounts of data larger than a block. ECB, which stands for Electronic Codebook, is considered less secure because it encrypts identical plaintext blocks into identical ciphertext blocks, thus not hiding data patterns well. This is why other modes like CBC (Cipher Block Chaining) or GCM (Galois/Counter Mode) are often recommended as they offer better security properties.</p>
+<p>Equipped with this knowledge, I was able to use the correct mode that allowed my python encrypted database files to be accepted by the app. Below shows the final version of this logic which went through many revisions as I was working on this issue:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">Crypto.Cipher</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">AES</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">class</span> <span style="color:#000">MonefyCrypto</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">__key</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#39;MyDifficultPassw&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#5c35cc;font-weight:bold">@staticmethod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">__process_file</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">input_file_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">output_file_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">operation</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">cipher</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">AES</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">new</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">MonefyCrypto</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">__key</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(),</span> <span style="color:#000">AES</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">MODE_ECB</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#204a87">open</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">input_file_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;rb&#39;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">input_file</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">input_bytes</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">input_file</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">read</span><span style="color:#000;font-weight:bold">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">operation</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#39;encrypt&#39;</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">output_bytes</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">cipher</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encrypt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">input_bytes</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">elif</span> <span style="color:#000">operation</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#39;decrypt&#39;</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">output_bytes</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">cipher</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">decrypt</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">input_bytes</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">else</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">raise</span> <span style="color:#c00;font-weight:bold">ValueError</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Unsupported operation: </span><span style="color:#4e9a06">{</span><span style="color:#000">operation</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#204a87">open</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">output_file_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;wb&#39;</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">output_file</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">output_file</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">write</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">output_bytes</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#c00;font-weight:bold">Exception</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">ex</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">raise</span> <span style="color:#c00;font-weight:bold">Exception</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Error </span><span style="color:#4e9a06">{</span><span style="color:#000">operation</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">ing file&#34;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">ex</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#5c35cc;font-weight:bold">@staticmethod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">encrypt_file</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">input_file_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">output_file_path</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">MonefyCrypto</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">__process_file</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">input_file_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">output_file_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;encrypt&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#5c35cc;font-weight:bold">@staticmethod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">decrypt_file</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">input_file_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">output_file_path</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">MonefyCrypto</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">__process_file</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">input_file_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">output_file_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;decrypt&#39;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>With everything relating to the creation of the encrypted backup file working in Python, the next task would be the biggest of this entire endeavour: recreating 18 months worth of missing transaction data.</p>
+<h2 id="the-little-help-from-my-friend">The Little Help from my Friend</h2>
+<p>The primary considerations during this process were to maintain the existing tables in the database by only adding new transactions from existing categories. I didn&rsquo;t want to risk corrupting anything by making changes which the database wasn&rsquo;t able to link with other tables (a precursor of things to come).</p>
+<p>Utilizing a detailed prompt with GPT-4 and thorough explanation of how the fields in the exported CSV should map to the table columns, I was able to generate code that was 90% what I wanted. The majority of modifications involved adjustments to the logic around the Unix timestamp to ensure it perfectly matched the format shown in the table. This is generally my experience with generative AI as of writing, it gets you most of the way there but you have to finish it yourself. Here is that detailed prompt:</p>
+<pre tabindex="0"><code>Write some logic in python that will read transactions data in the format of the following CSV file:
+
+&#39;&#39;&#39;
+date,account,category,amount,currency,converted amount,currency,description
+01/11/2017,Cash,Hobbies ,-4.99,GBP,-4.99,GBP,&#34;Camera Lens&#34;
+&#39;&#39;&#39;
+
+It must then upload this data to a sqlite table called transactions which has data in the following schema:
+
+&#39;&#39;&#39;
+account_id VARCHAR
+amount VARCHAR
+amountCents BIGINT
+category_id VARCHAR
+createdOn BIGINT
+note VARCHAR
+scheduleId VARCHAR
+deletedOn BIGINT
+_id VARCHAR
+localHashCode INTEGER
+remoteHashCode INTEGER
+hashCode INTEGER
+&#39;&#39;&#39;
+
+Here is some example data from the sqlite transactions table represented as a CSV file:
+
+&#39;&#39;&#39;
+account_id,amount,amountCents,category_id,createdOn,note,scheduleId,deletedOn,_id,localHashCode,remoteHashCode,hashCode
+10000000-0000-0000-0000-000000000001,0,5500,10000000-0000-0000-0000-000000000001,1510231796154,Subway lunch,NULL,NULL,cca202e6-0fd7-4156-9fe1-1b8c8a75d7f0,408580565,408580565,0
+10000000-0000-0000-0000-000000000001,0,800,10000000-0000-0000-0000-000000000001,1510311184056,Pastry ,NULL,NULL,e5ef29d1-92af-4e53-b174-118c7982bad2,1893744997,1893744997,0
+10000000-0000-0000-0000-000000000001,0,12000,995048dd-279c-451f-97bc-bf187fae5747,1512552805176,Disaster Artist,NULL,NULL,922cb861-b03f-42d6-b9fe-76d8df620032,321950014,321950014,0
+&#39;&#39;&#39;
+
+Here are instructions on how to generate the contents of each column row in the sqllite table based on the CSV data:
+
+account_id: This value would be found by looking for the &#39;account&#39; value from the CSV in the &#39;title&#39; 
+column from a sqlite table called &#39;accounts&#39;. The account_id is present in the &#39;_id&#39; column within this accounts table.
+amount: This can just be &#39;0&#39;.
+amountCents: This is converting the &#39;amount&#39; value from the CSV into a positive integer format by multiplying by 1000.
+category_id: This value would be found by looking for the &#39;category&#39; value from the CSV in the &#39;title&#39; column from a sqlite table called &#39;categories&#39;. The category_id is present in the &#39;_id&#39; column within this categories table.
+createdOn: This is the unix timestamp value for the &#39;date&#39; value in the CSV. To avoid any daylight sayings issues, convert the date from the CSV into the unix timestamp equivalent for occurring at 10:00 for all records.
+note: This is the &#39;description&#39; value from the CSV.
+scheduleId: This will always be NULL.
+deletedOn: This will always be NULL.
+_id: This must be a unique GUID value that is generated for each row of the data.
+localHashCode: This must be a random integer value either positive or negative.
+remoteHashCode: This must be the same as the localHashCode value.
+hashCode: This must always be 0.
+</code></pre><p>The resulting code made it possible to use a CSV in the format of the app exported files (the readble CSVs not the backup files), and convert it into a database file that I could encrypt. Up until this point I had been flying through the tasks with immense good fortune, but all of that was about to change.</p>
+<h2 id="the-lows-of-database-corruption">The Lows of Database Corruption</h2>
+<p>It became quite apparent almost immediately how long of a task recreating 18 months worth of transactions was going to take me. While I exported what I could from various other data sources like my bank, Splitwise, Amazon purchases, etc. the time it would take to list these all in the CSV for reupload would take a while. I was planning to focus on one month of data each evening until it was complete, and was happy with that target.</p>
+<p>While I could live with the tediousness of the data input, what I could not deal with so well was the app failing to accept the newly created backup files almost at random. If I tried to add the full months worth of data in one go I would see certain days with corrupted data in it appearing as blank values on the app. If I added that particular day on its own, there would be no error, or uploading the data in smaller batches. So uploading the data in smaller batches was what I did for a while until that stopped working too.</p>
+<p>I spent a while trying to understand the cause of this error, and the closest I came was seeing this in the database:</p>
+<p><img src="/media/images/corrupted_monefy_database.webp" alt="alt text" title="The corrupted id value in the database file"></p>
+<p>Looking at it now as I write this is giving me flashbacks to the frustrations I was feeling then trying to understand what on earth these arrow characters were and why they had appeared. There was nothing different whatsoever about the particular record that was seeing these, and tweaking the values as a form of trial and error wasn&rsquo;t revealing any clues. Each new attempt to resolve the issue I had to encrypt a new file, upload it to Google Drive, and try to restore from it from my phone. I was approaching my breaking point but wouldn&rsquo;t quit that easily.</p>
+<h2 id="the-unexpected-rescue">The Unexpected Rescue</h2>
+<p>In one of my many attempts to understand the corruption issue, I tested a database that had duplicate rows to see what would happen. When I tried restoring from this version, something different happened, an error message appeared in the app. This was interesting, and what was evening more interesting was that it had an option to &ldquo;Restore to a previously saved version&rdquo;, which I accepted. By some miracle, it recovered everything, all of the data I lost, all 18 months worth. I was elated.</p>
+<p>The only explanation I can think of for this is that the &ldquo;saved version&rdquo; was kept somewhere hidden where I hadn&rsquo;t looked yet (trust me I looked everywhere for more backup files). Perhaps buried deep in my phones system files, or in a hidden folder on my Google Drive, who knows? I sat there and reflected on the significance of this moment, as if it were a cosmic sign that my determination to continue with the issue has been rewarded.</p>
+<h2 id="the-key-takeaways">The Key Takeaways</h2>
+<p>With all of the work I had been doing working with SQlite and the database files I was able to make the change I originally wanted to make before accidentally deleting the database. I was able to make edits to old records on bulk using SQL commands that I&rsquo;d learned along the way, <a href="https://github.com/JibbyJames/monefy-backup">which I&rsquo;ve included in the GitHub repo here</a>. I&rsquo;ve also started backing up my transactions data frequently, and also upload into BigQuery which I&rsquo;ll cover in another blog post one day.</p>
+<p>The biggest takeaway of this process was without a doubt what the the database corruption issues taught me, which is to never give up, even when all hope seems lost.</p>
+</article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="/tags/python"><span class="tag">python</span></a></li>
+        
+          <li><a href="/tags/android"><span class="tag">android</span></a></li>
+        
+          <li><a href="/tags/java"><span class="tag">java</span></a></li>
+        
+          <li><a href="/tags/reverse-engineering"><span class="tag">reverse engineering</span></a></li>
+        
+          <li><a href="/tags/encryption"><span class="tag">encryption</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        
+      </p>
+    </footer>
+    
+      <div id="disqus_thread">
+    <div id="disqus_center">
+        <button id="disqus_show_comments_btn">Show Comments</button>
+    </div>
+</div>
+<script type="text/javascript">
+
+    
+    var loadDisqus = function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'jibbyjames';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }
+
+    
+    if(document.location.hash == "#disqus_thread") {
+        loadDisqus();
+    }
+
+    
+    var button = document.getElementById('disqus_show_comments_btn');
+    button.onclick = function(){ loadDisqus(); };
+
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      
+    
+  </section>
+  
+<footer class="site-footer">
+  <p>© 2023 James Buckley - All Rights Reserved</p>
+  
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@15.0.0/dist/smooth-scroll.min.js"></script>
+
+
+
+<script async src="https://cdn.jsdelivr.net/npm/video.js@7.3.0/dist/video.min.js"></script>
+
+
+
+
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    },
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
+</script>
+
+
+
+
+<script id="dsq-count-scr" src="//jibbyjames.disqus.com/count.js" async></script>
+
+
+
+<script src="/scripts/index.min.js"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('\/service-worker.js').then(function() {
+      console.log('[ServiceWorker] Registered');
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+  </body>
+</html>

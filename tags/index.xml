@@ -7,159 +7,126 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© James Buckley</copyright>
-    <lastBuildDate>Fri, 13 Oct 2023 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 13 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>android</title>
       <link>/tags/android/</link>
       <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/android/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>encryption</title>
       <link>/tags/encryption/</link>
       <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/encryption/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>java</title>
       <link>/tags/java/</link>
       <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/java/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>python</title>
       <link>/tags/python/</link>
       <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/python/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>reverse engineering</title>
       <link>/tags/reverse-engineering/</link>
       <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/reverse-engineering/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>bigquery</title>
       <link>/tags/bigquery/</link>
       <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/bigquery/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>data analysis</title>
       <link>/tags/data-analysis/</link>
       <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/data-analysis/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>data studio</title>
       <link>/tags/data-studio/</link>
       <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/data-studio/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>looker studio</title>
       <link>/tags/looker-studio/</link>
       <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/looker-studio/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>visualisations</title>
       <link>/tags/visualisations/</link>
       <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/visualisations/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>whatsapp</title>
       <link>/tags/whatsapp/</link>
       <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
-      
       <guid>/tags/whatsapp/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>apis</title>
       <link>/tags/apis/</link>
       <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
-      
       <guid>/tags/apis/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>enrichment</title>
       <link>/tags/enrichment/</link>
       <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
-      
       <guid>/tags/enrichment/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>films</title>
       <link>/tags/films/</link>
       <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
-      
       <guid>/tags/films/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>sorting algorithms</title>
       <link>/tags/sorting-algorithms/</link>
       <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
-      
       <guid>/tags/sorting-algorithms/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>data scraping</title>
       <link>/tags/data-scraping/</link>
       <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
-      
       <guid>/tags/data-scraping/</guid>
       <description></description>
     </item>
-    
     <item>
       <title>javascript</title>
       <link>/tags/javascript/</link>
       <pubDate>Sun, 12 Jan 2020 00:00:00 +0000</pubDate>
-      
       <guid>/tags/javascript/</guid>
       <description></description>
     </item>
-    
   </channel>
 </rss>

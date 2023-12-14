@@ -6,6 +6,7 @@
     <description>Recent content in Categories on James Buckley</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <copyright>© James Buckley</copyright><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>© James Buckley</copyright>
+    <atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

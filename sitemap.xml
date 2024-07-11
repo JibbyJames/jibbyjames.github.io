@@ -41,9 +41,6 @@
     <loc>/tags/data-studio/</loc>
     <lastmod>2023-05-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>/tags/looker-studio/</loc>
-    <lastmod>2023-05-06T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>/tags/visualisations/</loc>
     <lastmod>2023-05-06T00:00:00+00:00</lastmod>
   </url><url>
@@ -75,6 +72,9 @@
     <lastmod>2020-01-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>/post/lh-gauge-datastudio/</loc>
+    <lastmod>2020-01-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/tags/looker-studio/</loc>
     <lastmod>2020-01-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>/about/</loc>

@@ -7,15 +7,8 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© James Buckley</copyright>
-    <lastBuildDate>Sat, 06 May 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 12 Jan 2020 00:00:00 +0000</lastBuildDate>
     <atom:link href="/tags/looker-studio/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Analysing WhatsApp Data with BigQuery and Looker Studio</title>
-      <link>/post/whatsapp-metrics/</link>
-      <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
-      <guid>/post/whatsapp-metrics/</guid>
-      <description>WhatsApp is one of the most popular messaging apps in the world, with over 2 billion active users. It’s no surprise that many people want to analyse their WhatsApp data to gain insights into their conversations, including myself! In this post, I’ll detail how I used Python and BigQuery to analyze my WhatsApp data, covering everything from parsing the raw TXT export to visualizing the data. Let’s get started!&#xA;Parsing the TXT Export Within WhatsApp it is possible to export chat data to a TXT file, by opening the options within individual or group chats, tapping &amp;ldquo;More&amp;rdquo; then &amp;ldquo;Export chat&amp;rdquo;.</description>
-    </item>
     <item>
       <title>Lighthouse Gauges for Data Studio</title>
       <link>/post/lh-gauge-datastudio/</link>

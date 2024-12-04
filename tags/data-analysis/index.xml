@@ -14,7 +14,7 @@
       <link>/post/whatsapp-metrics/</link>
       <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
       <guid>/post/whatsapp-metrics/</guid>
-      <description>WhatsApp is one of the most popular messaging apps in the world, with over 2 billion active users. It’s no surprise that many people want to analyse their WhatsApp data to gain insights into their conversations, including myself! In this post, I’ll detail how I used Python and BigQuery to analyze my WhatsApp data, covering everything from parsing the raw TXT export to visualizing the data. Let’s get started!&#xA;Parsing the TXT Export Within WhatsApp it is possible to export chat data to a TXT file, by opening the options within individual or group chats, tapping &amp;ldquo;More&amp;rdquo; then &amp;ldquo;Export chat&amp;rdquo;.</description>
+      <description>&lt;p&gt;WhatsApp is one of the most popular messaging apps in the world, with over 2 billion active users. It’s no surprise that many people want to analyse their WhatsApp data to gain insights into their conversations, including myself! In this post, I’ll detail how I used Python and BigQuery to analyze my WhatsApp data, covering everything from parsing the raw TXT export to visualizing the data. Let’s get started!&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

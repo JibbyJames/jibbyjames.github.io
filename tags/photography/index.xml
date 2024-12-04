@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>photography on James Buckley</title>
+    <link>/tags/photography/</link>
+    <description>Recent content in photography on James Buckley</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>© James Buckley</copyright>
+    <lastBuildDate>Mon, 02 Dec 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="/tags/photography/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Fix Sorting Issues within Google Photos Albums</title>
+      <link>/post/google-photos-timezone-order-fix/</link>
+      <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>/post/google-photos-timezone-order-fix/</guid>
+      <description>&lt;p&gt;Have you encountered the issue in Google Photos where a holiday album with images from different devices, such as a phone and DSLR, appear out of order with no option to sort them correctly? This post examines the cause of the problem and provides a solution that may help.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

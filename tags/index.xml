@@ -7,8 +7,36 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© James Buckley</copyright>
-    <lastBuildDate>Fri, 13 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 02 Dec 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>google</title>
+      <link>/tags/google/</link>
+      <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>/tags/google/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>photography</title>
+      <link>/tags/photography/</link>
+      <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>/tags/photography/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>photos</title>
+      <link>/tags/photos/</link>
+      <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>/tags/photos/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>python</title>
+      <link>/tags/python/</link>
+      <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>/tags/python/</guid>
+      <description></description>
+    </item>
     <item>
       <title>android</title>
       <link>/tags/android/</link>
@@ -28,13 +56,6 @@
       <link>/tags/java/</link>
       <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
       <guid>/tags/java/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>python</title>
-      <link>/tags/python/</link>
-      <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>/tags/python/</guid>
       <description></description>
     </item>
     <item>

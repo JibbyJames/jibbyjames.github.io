@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8" />
+
+  
+  <title>Fix Sorting Issues within Google Photos Albums</title>
+
+  
+  
+
+
+  <link href="//cdn.jsdelivr.net" rel="dns-prefetch">
+  <link href="//cdnjs.cloudflare.com" rel="dns-prefetch">
+  
+  <link href="//at.alicdn.com" rel="dns-prefetch">
+  
+  <link href="//fonts.googleapis.com" rel="dns-prefetch">
+  <link href="//fonts.gstatic.com" rel="dns-prefetch">
+  <link href="///disqus.com" rel="dns-prefetch">
+  <link href="//c.disquscdn.com" rel="dns-prefetch">
+
+  
+
+  
+  
+  
+    <meta name="description" content="Have you encountered the issue in Google Photos where a holiday album with images from different devices, such as a phone and DSLR, appear out of order with no option to sort them correctly? This post examines the cause of the problem and provides a solution that may help.
+">
+  
+
+  
+  
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@_JibbyJames">
+    <meta name="twitter:title" content="Fix Sorting Issues within Google Photos Albums">
+    <meta name="twitter:description" content="Have you encountered the issue in Google Photos where a holiday album with images from different devices, such as a phone and DSLR, appear out of order with no option to sort them correctly? This post examines the cause of the problem and provides a solution that may help.
+">
+    <meta name="twitter:image" content="/images/avatar.webp">
+  
+
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Fix Sorting Issues within Google Photos Albums">
+  <meta property="og:description" content="Have you encountered the issue in Google Photos where a holiday album with images from different devices, such as a phone and DSLR, appear out of order with no option to sort them correctly? This post examines the cause of the problem and provides a solution that may help.
+">
+  <meta property="og:url" content="/post/google-photos-timezone-order-fix/">
+  <meta property="og:image" content="/images/avatar.webp">
+
+
+
+
+<meta name="generator" content="Hugo 0.121.1">
+
+
+<link rel="canonical" href="/post/google-photos-timezone-order-fix/">
+
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="format-detection" content="telephone=no,email=no,adress=no">
+<meta http-equiv="Cache-Control" content="no-transform">
+
+
+<meta name="robots" content="index,follow">
+<meta name="referrer" content="origin-when-cross-origin">
+<meta name="google-site-verification" content="_moDmnnBNVLBN1rzNxyGUGdPHE20YgbmrtzLIbxaWFc">
+<meta name="msvalidate.01" content="22596E34341DD1D17D6022C44647E587">
+
+
+
+
+
+<meta name="theme-color" content="#02b875">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="James Buckley">
+<meta name="msapplication-tooltip" content="James Buckley">
+<meta name='msapplication-navbutton-color' content="#02b875">
+<meta name="msapplication-TileColor" content="#02b875">
+<meta name="msapplication-TileImage" content="/icons/icon-144x144.webp">
+<link rel="icon" href="/icons/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.webp">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.webp">
+<link rel="icon" sizes="192x192" href="/icons/icon-192x192.webp">
+<link rel="apple-touch-icon" href="/icons/icon-152x152.webp">
+<link rel="manifest" href="/manifest.json">
+
+
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NQNLPRX');</script>
+
+
+
+<link rel="preload" href="/styles/main-rendered.min.css" as="style">
+
+<link rel="preload" href="/styles/custom.min.css" as="style">
+<link rel="preload" href="https://fonts.googleapis.com/css?family=Lobster" as="style">
+<link rel="preload" href="/images/avatar.webp" as="image">
+<link rel="preload" href="/images/grey-prism.svg" as="image">
+
+
+<style>
+  body {
+    background: rgb(244, 243, 241) url('/images/grey-prism.svg') repeat fixed;
+  }
+</style>
+<link rel="stylesheet" href="/styles/main-rendered.min.css">
+
+<link rel="stylesheet" href="/styles/custom.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.2/dist/medium-zoom.min.js"></script>
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/video.js@7.3.0/dist/video-js.min.css">
+
+
+
+  
+  
+<!--[if lte IE 8]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-ie8@1.1.2/dist/videojs-ie8.min.js"></script>
+<![endif]-->
+
+<!--[if lte IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20180112/classList.min.js"></script>
+<![endif]-->
+
+
+</head>
+  <body>
+    <div class="suspension">
+      <a role="button" aria-label="Go to top" title="Go to top" class="to-top is-hide"><span class="icon icon-up" aria-hidden="true"></span></a>
+      
+        
+	<a role="button" aria-label="Go to comments" title="Go to comments" class="to-comment" href="#disqus_thread"><span class="icon icon-comment" aria-hidden="true"></span></a>
+        
+      
+    </div>
+    
+    
+  <header class="site-header">
+  <a href="/"><img class="avatar" src="/images/avatar.webp" alt="Avatar"></a>
+  
+  <h2 class="title"><a href="/">James Buckley</a></h2>
+  
+  <p class="subtitle">Think it ~ Build it ~ Use it ~ Share it</p>
+  <button class="menu-toggle" type="button" aria-label="Main Menu" aria-expanded="false" tab-index="0">
+    <span class="icon icon-menu" aria-hidden="true"></span>
+  </button>
+
+  <nav class="site-menu collapsed">
+    <h2 class="offscreen">Main Menu</h2>
+    <ul class="menu-list">
+      
+      
+      
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/about/">About</a>
+        </li>
+      
+        <li class="menu-item
+          
+          
+          ">
+          <a href="/resume/">Resume</a>
+        </li>
+      
+    </ul>
+  </nav>
+  <nav class="social-menu collapsed">
+    <h2 class="offscreen">Social Networks</h2>
+    <ul class="social-list"><li class="social-item">
+          <a href="mailto:jjbuckley.42@gmail.com" title="Email" aria-label="Email">
+            <span class="icon icon-email" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//github.com/JibbyJames" target="_blank" rel="me " title="GitHub" aria-label="GitHub">
+	    <span class="icon icon-github" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//twitter.com/_JibbyJames" target="_blank" rel="me " title="Twitter" aria-label="Twitter">
+            <span class="icon icon-twitter" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//www.instagram.com/jibbyjames" target="_blank" rel="me " title="Instagram" aria-label="Instagram">
+            <span class="icon icon-instagram" aria-hidden="true"></span>
+          </a>
+        </li><li class="social-item">
+          <a href="//www.linkedin.com/in/jamesjbuckley" target="_blank" rel="me " title="LinkedIn" aria-label="LinkedIn">
+            <span class="icon icon-linkedin" aria-hidden="true"></span>
+          </a>
+        </li></ul>
+  </nav>
+</header>
+
+  <section class="main post-detail">
+    
+    <header class="post-header" style="background: url(/media/images/google-photos/cover.webp);">
+    
+      <h1 class="post-title"><p>Fix Sorting Issues within Google Photos Albums</p></h1>
+      <p class="post-meta"><span>Dec 2, 2024 · 5 min read</span></p>
+    </header>
+    <article class="post-content"><p>Have you encountered the issue in Google Photos where a holiday album with images from different devices, such as a phone and DSLR, appear out of order with no option to sort them correctly? This post examines the cause of the problem and provides a solution that may help.</p>
+<h3 id="the-issue">The Issue</h3>
+<p>After returning from trips abroad, I developed a habit of organising all my photos into a single album to share with friends and family. These photos came from various devices: my phone, a Sony mirrorless camera, a DJI Pocket, and my partner&rsquo;s phone. Some devices—typically those with Wi-Fi—adjusted their capture times automatically based on the local time, while others had to be manually updated. If I overlooked this step, I could batch-correct the timestamps in Adobe Lightroom, syncing all devices to the precise minute and second.</p>
+<p>On my computer, the photos appeared perfectly ordered. However, once uploaded to Google Photos, the album descended into chaos, with the photo order completely scrambled. While Google Photos does support sorting by &ldquo;Oldest first&rdquo; or &ldquo;Newest first,&rdquo; albums could still appear out of order despite the correct capture times (as illustrated below):</p>
+<p><img src="/media/images/google-photos/album_wrong.webp" alt="alt text" title="Google Photos album shown out of order."></p>
+<p>The reason this is happening is because <strong>Google Photos uses another part of the EXIF data to further sort them: OffsetTime</strong>. Looking at the image details on Google Photos shows this offset value, which is recorded based on the location data in the image EXIF:</p>
+<p><img src="/media/images/google-photos/details_offset.webp" alt="alt text" title="Offset shown in Google Photos metadata."></p>
+<p>Google is trying to be helpful by adding the offset hours to the capture time when ordering the photos, but this causes photos without location/timezone/offset data to no longer appear next to the other photos captured at the same time. This OffsetTime value also cannot be edited in Google Photos or Lightroom, so we must explore other methods.</p>
+<h3 id="solution-1---exiftool">Solution #1 - ExifTool</h3>
+<p>First ensure that all images are correctly ordered on your computer with their capture times properly adjusted. For this task I personally use Lightroom, but any photo editing tool capable of timestamp adjustments will suffice.</p>
+<p>Next, you&rsquo;ll need ExifTool, a great utility for editing image metadata. Follow these steps:</p>
+<ol>
+<li>Download ExifTool from the <a href="https://exiftool.org/">official website</a>.</li>
+<li>Extract the executable (named exiftool(-k).exe by default).</li>
+<li>Rename it to exiftool.exe.</li>
+<li>Add it to your system&rsquo;s PATH to make it accessible from any directory in the terminal.</li>
+</ol>
+<p>Once ExifTool is ready, you can use the below Python script to streamline the process of modifying metadata for an entire album. The script will automate the adjustments needed to ensure proper sorting in Google Photos. Here’s the Python code to get started:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install pyexiftool</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">exiftool</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">adjust_timezone_offset</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">new_offset</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dryrun</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">new_offset_str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">{</span><span style="color:#000">new_offset</span><span style="color:#4e9a06">:</span><span style="color:#4e9a06">+03d</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">:00&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">with</span> <span style="color:#000">exiftool</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifTool</span><span style="color:#000;font-weight:bold">()</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">et</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8f5902;font-style:italic"># Get current metadata</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">current_metadata</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">et</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">execute</span><span style="color:#000;font-weight:bold">(</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;-j -OffsetTimeOriginal -OffsetTimeDigitized -OffsetTime </span><span style="color:#4e9a06">{</span><span style="color:#000">image_path</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">dryrun</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Dry Run - </span><span style="color:#4e9a06">{</span><span style="color:#000">image_path</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">:&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;  Current Metadata: </span><span style="color:#4e9a06">{</span><span style="color:#000">current_metadata</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;  New Offset: </span><span style="color:#4e9a06">{</span><span style="color:#000">new_offset_str</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#204a87;font-weight:bold">return</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#8f5902;font-style:italic"># Update timezone offsets</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">et</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">execute</span><span style="color:#000;font-weight:bold">(</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;-OffsetTimeOriginal=</span><span style="color:#4e9a06">{</span><span style="color:#000">new_offset_str</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;-OffsetTimeDigitized=</span><span style="color:#4e9a06">{</span><span style="color:#000">new_offset_str</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;-OffsetTime=</span><span style="color:#4e9a06">{</span><span style="color:#000">new_offset_str</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;-overwrite_original&#34;</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">),</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000">image_path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Updated </span><span style="color:#4e9a06">{</span><span style="color:#000">image_path</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> with timezone offset </span><span style="color:#4e9a06">{</span><span style="color:#000">new_offset_str</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">.&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#c00;font-weight:bold">Exception</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">e</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Error processing </span><span style="color:#4e9a06">{</span><span style="color:#000">image_path</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: </span><span style="color:#4e9a06">{</span><span style="color:#000">e</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">process_images_in_directory</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">directory</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">new_offset</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dryrun</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">filename</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">listdir</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">directory</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">filename</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">endswith</span><span style="color:#000;font-weight:bold">((</span><span style="color:#4e9a06">&#39;.jpg&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;.jpeg&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;.tiff&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;.png&#39;</span><span style="color:#000;font-weight:bold">)):</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">image_path</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">join</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">directory</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">filename</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">adjust_timezone_offset</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">new_offset</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dryrun</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">dryrun</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;__main__&#34;</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#000">target_directory</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;C:</span><span style="color:#4e9a06">\\</span><span style="color:#4e9a06">path</span><span style="color:#4e9a06">\\</span><span style="color:#4e9a06">to</span><span style="color:#4e9a06">\\</span><span style="color:#4e9a06">your</span><span style="color:#4e9a06">\\</span><span style="color:#4e9a06">images&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">new_offset</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">0</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Set to True for a dry run, False to apply changes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">dryrun</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">process_images_in_directory</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">target_directory</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">new_offset</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dryrun</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">dryrun</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>Save the above to a file called <code>process_images_exiftool.py</code>, edit the <code>target_directory</code> to be the folder containing your images, then open the folder where this file was saved in the terminal / command-prompt, then run <code>python process_images_exiftool.py</code>.</p>
+<p><img src="/media/images/google-photos/cmd_output.webp" alt="alt text" title="CMD output of images being edited by python script."></p>
+<h3 id="solution-2---piexif">Solution #2 - piexif</h3>
+<p>While developing the solution to this problem my first attempt used the <code>piexif</code> package, which seemed to be an incomplete solution as it was not able to transfer over the &ldquo;tags&rdquo;  had added to the images from Lightroom. It also had some unexpected behaviour of reducing the filesize to about 25% of the original size with no loss in image quality.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">os</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install pillow</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">from</span> <span style="color:#000">PIL</span> <span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">Image</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8f5902;font-style:italic"># pip install piexif</span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">import</span> <span style="color:#000">piexif</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">adjust_timezone_offset</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">new_offset</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dryrun</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">try</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># Load the image and its EXIF data</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">img</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">Image</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">open</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">exif_data</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">img</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">info</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">get</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#39;exif&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">b</span><span style="color:#4e9a06">&#39;&#39;</span><span style="color:#000;font-weight:bold">)</span>  <span style="color:#8f5902;font-style:italic"># Preserve existing EXIF data</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">exif_dict</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">load</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">exif_data</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">exif_data</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span><span style="color:#4e9a06">&#34;0th&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{},</span> <span style="color:#4e9a06">&#34;Exif&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{},</span> <span style="color:#4e9a06">&#34;GPS&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{},</span> <span style="color:#4e9a06">&#34;1st&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#000;font-weight:bold">{},</span> <span style="color:#4e9a06">&#34;thumbnail&#34;</span><span style="color:#000;font-weight:bold">:</span> <span style="color:#204a87;font-weight:bold">None</span><span style="color:#000;font-weight:bold">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># Determine the current offset</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">current_offset</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">None</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTimeOriginal</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">current_offset</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">][</span><span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTimeOriginal</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">decode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">elif</span> <span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTimeDigitized</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">current_offset</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">][</span><span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTimeDigitized</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">decode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">elif</span> <span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTime</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">current_offset</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">][</span><span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTime</span><span style="color:#000;font-weight:bold">]</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">decode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">new_offset_str</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">{</span><span style="color:#000">new_offset</span><span style="color:#4e9a06">:</span><span style="color:#4e9a06">+03d</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">:00&#34;</span>  <span style="color:#8f5902;font-style:italic"># Format as &#34;+02:00&#34; or &#34;-05:00&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># Print dry run information</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">dryrun</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Dry Run - </span><span style="color:#4e9a06">{</span><span style="color:#000">image_path</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">:&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;  Current Offset: </span><span style="color:#4e9a06">{</span><span style="color:#000">current_offset</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">current_offset</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#4e9a06">&#39;Not Set&#39;</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;  New Offset: </span><span style="color:#4e9a06">{</span><span style="color:#000">new_offset_str</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#204a87;font-weight:bold">return</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># Update the timezone offset EXIF tags</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTimeOriginal</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">][</span><span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTimeOriginal</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">new_offset_str</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTimeDigitized</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">][</span><span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTimeDigitized</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">new_offset_str</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTime</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">]:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">[</span><span style="color:#4e9a06">&#39;Exif&#39;</span><span style="color:#000;font-weight:bold">][</span><span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">ExifIFD</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">OffsetTime</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">new_offset_str</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">encode</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">&#34;utf-8&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#8f5902;font-style:italic"># Save the new EXIF data back to the image</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">exif_bytes</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">piexif</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">dump</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">exif_dict</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000">img</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">save</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">exif</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">exif_bytes</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Updated </span><span style="color:#4e9a06">{</span><span style="color:#000">image_path</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06"> with timezone offset </span><span style="color:#4e9a06">{</span><span style="color:#000">new_offset_str</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">.&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">except</span> <span style="color:#c00;font-weight:bold">Exception</span> <span style="color:#204a87;font-weight:bold">as</span> <span style="color:#000">e</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87">print</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06">f</span><span style="color:#4e9a06">&#34;Error processing </span><span style="color:#4e9a06">{</span><span style="color:#000">image_path</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">: </span><span style="color:#4e9a06">{</span><span style="color:#000">e</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">&#34;</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">def</span> <span style="color:#000">process_images_in_directory</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">directory</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">new_offset</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dryrun</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">False</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#204a87;font-weight:bold">for</span> <span style="color:#000">filename</span> <span style="color:#204a87;font-weight:bold">in</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">listdir</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">directory</span><span style="color:#000;font-weight:bold">):</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">filename</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">lower</span><span style="color:#000;font-weight:bold">()</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">endswith</span><span style="color:#000;font-weight:bold">((</span><span style="color:#4e9a06">&#39;.jpg&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;.jpeg&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;.tiff&#39;</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#4e9a06">&#39;.png&#39;</span><span style="color:#000;font-weight:bold">)):</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">image_path</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">os</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">path</span><span style="color:#ce5c00;font-weight:bold">.</span><span style="color:#000">join</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">directory</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">filename</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000">adjust_timezone_offset</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">image_path</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">new_offset</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dryrun</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">dryrun</span><span style="color:#000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000">__name__</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#4e9a06">&#34;__main__&#34;</span><span style="color:#000;font-weight:bold">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Define variables directly in the script</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">target_directory</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#4e9a06">&#34;C:</span><span style="color:#4e9a06">\\</span><span style="color:#4e9a06">path</span><span style="color:#4e9a06">\\</span><span style="color:#4e9a06">to</span><span style="color:#4e9a06">\\</span><span style="color:#4e9a06">your</span><span style="color:#4e9a06">\\</span><span style="color:#4e9a06">images&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">new_offset</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#8f5902;font-style:italic"># Set to True for a dry run, False to apply changes</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">dryrun</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#8f5902;font-style:italic"># Process images in the specified directory</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000">process_images_in_directory</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">target_directory</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">new_offset</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">dryrun</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">dryrun</span><span style="color:#000;font-weight:bold">)</span>
+</span></span></code></pre></div><p>As before, save the above to another file called <code>process_images_piexif.py</code> then then run <code>python process_images_piexif.py</code>. You&rsquo;ll see when comparing to the original images that the filesize is much lower, but the tags I was using have been removed:</p>
+<p><img src="/media/images/google-photos/file_size.webp" alt="alt text" title="piexif approach reducing the file size."></p>
+<p>The <code>piexif</code> package does not support metadata stored in XMP or IPTC which may be what is being lost in this process. I am opting to use this approach despite the missing metadata as I prefer the large reduction in file size. As I cannot read this metadata easily either it concerns me slightly what could be included there (I should look into this).</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>Using either method to process the images before uploading to Google Photos will now show the images in the correct order:</p>
+<p><img src="/media/images/google-photos/album_correct.webp" alt="alt text" title="Google Photos album now showing images in correct order."></p></article>
+    <footer class="post-footer">
+      
+      <ul class="post-tags">
+        
+          <li><a href="/tags/python"><span class="tag">python</span></a></li>
+        
+          <li><a href="/tags/photography"><span class="tag">photography</span></a></li>
+        
+          <li><a href="/tags/google"><span class="tag">google</span></a></li>
+        
+          <li><a href="/tags/photos"><span class="tag">photos</span></a></li>
+        
+      </ul>
+      
+      <p class="post-copyright">
+        
+      </p>
+    </footer>
+    
+      <div id="disqus_thread">
+    <div id="disqus_center">
+        <button id="disqus_show_comments_btn">Show Comments</button>
+    </div>
+</div>
+<script type="text/javascript">
+
+    
+    var loadDisqus = function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        var disqus_shortname = 'jibbyjames';
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }
+
+    
+    if(document.location.hash == "#disqus_thread") {
+        loadDisqus();
+    }
+
+    
+    var button = document.getElementById('disqus_show_comments_btn');
+    button.onclick = function(){ loadDisqus(); };
+
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      
+    
+  </section>
+  
+<footer class="site-footer">
+  <p>© 2024 James Buckley - All Rights Reserved</p>
+  
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/smooth-scroll@15.0.0/dist/smooth-scroll.min.js"></script>
+
+
+
+<script async src="https://cdn.jsdelivr.net/npm/video.js@7.3.0/dist/video.min.js"></script>
+
+
+
+
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      displayMath: [['$$','$$'], ['\\[','\\]']],
+      processEscapes: true,
+      processEnvironments: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      TeX: { equationNumbers: { autoNumber: "AMS" },
+      extensions: ["AMSmath.js", "AMSsymbols.js"] }
+    },
+  });
+</script>
+<script type="text/x-mathjax-config">
+  // Fix <code> tags after MathJax finishes running. This is a
+  // hack to overcome a shortcoming of Markdown. Discussion at
+  // https://github.com/mojombo/jekyll/issues/199
+  MathJax.Hub.Queue(() => {
+    MathJax.Hub.getAllJax().map(v => v.SourceElement().parentNode.className += ' has-jax');
+  });
+</script>
+
+
+
+
+<script id="dsq-count-scr" src="//jibbyjames.disqus.com/count.js" async></script>
+
+
+
+<script src="/scripts/index.min.js"></script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('\/service-worker.js').then(function() {
+      console.log('[ServiceWorker] Registered');
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+  </body>
+</html>

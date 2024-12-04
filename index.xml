@@ -7,42 +7,49 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>© James Buckley</copyright>
-    <lastBuildDate>Fri, 13 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 02 Dec 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Fix Sorting Issues within Google Photos Albums</title>
+      <link>/post/google-photos-timezone-order-fix/</link>
+      <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>/post/google-photos-timezone-order-fix/</guid>
+      <description>&lt;p&gt;Have you encountered the issue in Google Photos where a holiday album with images from different devices, such as a phone and DSLR, appear out of order with no option to sort them correctly? This post examines the cause of the problem and provides a solution that may help.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Lost Data and the Power of Reverse Engineering</title>
       <link>/post/lost-data-and-the-power-of-reverse-engineering/</link>
       <pubDate>Fri, 13 Oct 2023 00:00:00 +0000</pubDate>
       <guid>/post/lost-data-and-the-power-of-reverse-engineering/</guid>
-      <description>Have you ever accidentally deleted an entire database worth of data? This was precisely the nightmare I found myself in recently with my personal budget app after trying to tidy up some old transactions. Fortunately I found an old backup file, but it was over 18 months old which seemed far too big of a gap of data for me to accept. Thus began a journey full of highs and lows to rebuild the missing information using other data sources and digging into the source code of the app itself, which I will describe below.</description>
+      <description>&lt;p&gt;Have you ever accidentally deleted an entire database worth of data? This was precisely the nightmare I found myself in recently with my personal budget app after trying to tidy up some old transactions. Fortunately I found an old backup file, but it was over 18 months old which seemed far too big of a gap of data for me to accept. Thus began a journey full of highs and lows to rebuild the missing information using other data sources and digging into the source code of the app itself, which I will describe below.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Analysing WhatsApp Data with BigQuery and Looker Studio</title>
       <link>/post/whatsapp-metrics/</link>
       <pubDate>Sat, 06 May 2023 00:00:00 +0000</pubDate>
       <guid>/post/whatsapp-metrics/</guid>
-      <description>WhatsApp is one of the most popular messaging apps in the world, with over 2 billion active users. It’s no surprise that many people want to analyse their WhatsApp data to gain insights into their conversations, including myself! In this post, I’ll detail how I used Python and BigQuery to analyze my WhatsApp data, covering everything from parsing the raw TXT export to visualizing the data. Let’s get started!&#xA;Parsing the TXT Export Within WhatsApp it is possible to export chat data to a TXT file, by opening the options within individual or group chats, tapping &amp;ldquo;More&amp;rdquo; then &amp;ldquo;Export chat&amp;rdquo;.</description>
+      <description>&lt;p&gt;WhatsApp is one of the most popular messaging apps in the world, with over 2 billion active users. It’s no surprise that many people want to analyse their WhatsApp data to gain insights into their conversations, including myself! In this post, I’ll detail how I used Python and BigQuery to analyze my WhatsApp data, covering everything from parsing the raw TXT export to visualizing the data. Let’s get started!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Enriching my Film Journal with the IMDB API</title>
       <link>/post/film-journal-enrichment/</link>
       <pubDate>Mon, 29 Aug 2022 00:00:00 +0000</pubDate>
       <guid>/post/film-journal-enrichment/</guid>
-      <description>A while ago I made the decision to log every film I watched so that I could one day analyse this data in some way. With a year&amp;rsquo;s worth of films I thought it could be interesting to also enrich this with more information about the films using all of the data available from IMDB. Was it worth it? Let&amp;rsquo;s find out&amp;hellip;&#xA;Choosing What to Analyse It&amp;rsquo;s always good to start with some initial questions you want to answer before any data analysis task.</description>
+      <description>&lt;p&gt;A while ago I made the decision to log every film I watched so that I could one day analyse this data in some way. With a year&amp;rsquo;s worth of films I thought it could be interesting to also enrich this with more information about the films using all of the data available from IMDB. Was it worth it? Let&amp;rsquo;s find out&amp;hellip;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Data Scraping Coursera to Find the Perfect Course</title>
       <link>/post/coursera-data-scraper/</link>
       <pubDate>Mon, 27 Dec 2021 00:00:00 +0000</pubDate>
       <guid>/post/coursera-data-scraper/</guid>
-      <description>Coursera is a great site which offers online courses covering a large range of topics such as engineering, data science, machine learning, and mathematics. Some are grouped into specializations, and even full-on degrees from universities such as Imperial College London. While you can browse these courses and filter on areas which matter to you, I wondered if analysing the stats on all of them at once could reveal any particular courses that stand out among the crowd.</description>
+      <description>&lt;p&gt;Coursera is a great site which offers online courses covering a large range of topics such as engineering, data science, machine learning, and mathematics. Some are grouped into specializations, and even full-on degrees from universities such as Imperial College London. While you can browse these courses and filter on areas which matter to you, I wondered if analysing the stats on all of them at once could reveal any particular courses that stand out among the crowd.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Lighthouse Gauges for Data Studio</title>
       <link>/post/lh-gauge-datastudio/</link>
       <pubDate>Sun, 12 Jan 2020 00:00:00 +0000</pubDate>
       <guid>/post/lh-gauge-datastudio/</guid>
-      <description>Site speed metrics can be obtained using the Lighthouse auditing tool, which can be run within Google Chrome. Metrics like this have started to become used in SEO ranking, so naturally if efforts are being made to improve site speed, it makes sense to measure and report on it. When tasked with creating a dashboard displaying Lighthouse metrics over time, what better way to display the current score for each metric than in the very same gauges Lighthouse itself uses in its reports:</description>
+      <description>&lt;p&gt;Site speed metrics can be obtained using the &lt;a href=&#34;https://developers.google.com/web/tools/lighthouse&#34;&gt;Lighthouse&lt;/a&gt; auditing tool, which can be run within Google Chrome. Metrics like this have started to become used in SEO ranking, so naturally if efforts are being made to improve site speed, it makes sense to measure and report on it. When tasked with creating a dashboard displaying Lighthouse metrics over time, what better way to display the current score for each metric than in the very same gauges Lighthouse itself uses in its reports?&lt;/p&gt;</description>
     </item>
     <item>
       <title>About</title>
